@@ -1,7 +1,7 @@
 import { UserSession } from '@/lib/types';
-import { Space, Button } from 'antd';
+import { Button, Space } from 'antd';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
-// import { signOut } from "next-auth/react";
 
 export function HeaderWelcomeMessage(props: { user?: UserSession }) {
   if (!props.user) {
@@ -18,7 +18,7 @@ export function HeaderWelcomeMessage(props: { user?: UserSession }) {
   return (
     <Space>
       Welcome, {props.user.name}!
-      {/* <Button onClick={() => signOut()}>Logout</Button> */}
+      <Button onClick={() => signOut()}>Logout</Button>
     </Space>
   );
 }
