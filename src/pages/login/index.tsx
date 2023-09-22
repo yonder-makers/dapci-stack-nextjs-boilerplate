@@ -1,12 +1,12 @@
-import { withAuth } from "@/lib/hocs";
-import { LoginForm } from "@/components/forms/Login.form";
+import { withAuth } from '@/lib/hocs';
+import { LoginForm } from '@/components/forms/Login.form';
 
 export const getServerSideProps = withAuth(
-  "ANONYMOUS",
+  'ANONYMOUS',
   async function (session) {
     if (session) {
       return {
-        redirect: "/profile",
+        redirect: '/profile',
       };
     }
 

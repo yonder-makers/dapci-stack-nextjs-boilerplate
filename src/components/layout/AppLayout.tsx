@@ -1,12 +1,12 @@
-import { UserSession } from "@/lib/types";
-import { NotificationsProvider } from "@/providers/notification.providers";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Button, Col, Layout, Row, theme } from "antd";
-import React, { useState } from "react";
-import { HeaderWelcomeMessage } from "./HeaderWelcomeMessage";
-import { SideMenu } from "./SideMenu";
+import { UserSession } from '@/lib/types';
+import { NotificationsProvider } from '@/providers/notification.providers';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { Button, Col, Layout, Row, theme } from 'antd';
+import React, { useState } from 'react';
+import { HeaderWelcomeMessage } from './HeaderWelcomeMessage';
+import { SideMenu } from './SideMenu';
 
-const {  Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 type AppLayoutProps = {
   children: React.ReactNode;
@@ -37,7 +37,7 @@ export function AppLayout(props: AppLayoutProps) {
                   }
                   onClick={() => setCollapsed(!collapsed)}
                   style={{
-                    fontSize: "16px",
+                    fontSize: '16px',
                     width: 64,
                     height: 64,
                   }}
@@ -50,7 +50,7 @@ export function AppLayout(props: AppLayoutProps) {
           </Layout.Header>
           <Content
             style={{
-              margin: "24px 16px",
+              margin: '24px 16px',
               padding: 24,
               minHeight: 280,
               background: colorBgContainer,

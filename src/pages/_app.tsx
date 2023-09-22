@@ -1,8 +1,8 @@
-import "./globals.css";
+import './globals.css';
 
-import { AppLayout } from "@/components/layout/AppLayout";
-import { WithAuthType } from "@/lib/hocs";
-import type { AppProps } from "next/app";
+import { AppLayout } from '@/components/layout/AppLayout';
+import { WithAuthType } from '@/lib/hocs';
+import type { AppProps } from 'next/app';
 
 export default function App({ Component, pageProps }: AppProps<WithAuthType>) {
   if ((Component as any).noLayout) {

@@ -1,7 +1,7 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { ParsedUrlQuery } from "querystring";
-import { getUserSession } from "./auth";
-import { UserRoles, UserSession } from "./types";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import { ParsedUrlQuery } from 'querystring';
+import { getUserSession } from './auth';
+import { UserRoles, UserSession } from './types';
 
 type OutputTypes = {} | { errorMessage: string };
 
@@ -9,7 +9,7 @@ export function withAuth<
   TParams extends ParsedUrlQuery = ParsedUrlQuery,
   TOutput extends OutputTypes = {},
 >(
-  role: UserRoles | "ANONYMOUS",
+  role: UserRoles | 'ANONYMOUS',
   fn: (user: UserSession | undefined, params: TParams) => Promise<TOutput>,
 ) {
   return async function (context: GetServerSidePropsContext<TParams>) {
@@ -21,7 +21,7 @@ export function withAuth<
       return {
         redirect: {
           permanent: false,
-          destination: "/login",
+          destination: '/login',
         },
       };
     } else {
@@ -37,7 +37,7 @@ export function withAuth<
         }
       } catch (error) {
         output = {
-          errorMessage: (error as any)?.message ?? error ?? "Unknown error",
+          errorMessage: (error as any)?.message ?? error ?? 'Unknown error',
         } as TOutput;
       }
     }
@@ -54,19 +54,19 @@ export function withAuth<
 
 function hasAccess(
   user: UserSession | undefined,
-  role: UserRoles | "ANONYMOUS",
+  role: UserRoles | 'ANONYMOUS',
   companyId?: string,
 ) {
-  const userRole = user?.role || "ANONYMOUS";
+  const userRole = user?.role || 'ANONYMOUS';
   const userCompanyId = user?.companyId || undefined;
 
-  if (userRole === "SUPERADMIN") return true;
+  if (userRole === 'SUPERADMIN') return true;
 
-  if (role === "ANONYMOUS") {
+  if (role === 'ANONYMOUS') {
     return true;
   }
 
-  if (userRole === "ADMIN" && (role === "ADMIN" || role === "USER")) {
+  if (userRole === 'ADMIN' && (role === 'ADMIN' || role === 'USER')) {
     if (!companyId) {
       return true;
     }
@@ -74,7 +74,7 @@ function hasAccess(
     return userCompanyId === companyId;
   }
 
-  if (userRole === "USER" && role === "USER") {
+  if (userRole === 'USER' && role === 'USER') {
     if (!companyId) {
       return true;
     }

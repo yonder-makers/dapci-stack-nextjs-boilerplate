@@ -1,11 +1,8 @@
-import { UserSession } from "@/lib/types";
-import {
-  UploadOutlined,
-  UserOutlined
-} from "@ant-design/icons";
-import { Menu } from "antd";
-import Link from "next/link";
-import React from "react";
+import { UserSession } from '@/lib/types';
+import { UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { Menu } from 'antd';
+import Link from 'next/link';
+import React from 'react';
 
 type SideMenuProps = {
   user?: UserSession;
@@ -14,17 +11,16 @@ export function SideMenu(props: SideMenuProps) {
   const role = props.user?.role;
 
   switch (role) {
-    case "SUPERADMIN":
+    case 'SUPERADMIN':
       return <SuperAdminMenu />;
-    case "ADMIN":
+    case 'ADMIN':
       return <AdminMenu />;
-    case "USER":
+    case 'USER':
       return <NormalUserMenu />;
     default:
       return <NotAuthenticatedMenu />;
   }
 }
-
 
 function item(text: string, url: string, logo?: React.ReactNode) {
   return {
@@ -40,7 +36,7 @@ function NotAuthenticatedMenu() {
       theme="dark"
       mode="inline"
       defaultSelectedKeys={[]}
-      items={[item("Login", "/login", <UserOutlined />)]}
+      items={[item('Login', '/login', <UserOutlined />)]}
     />
   );
 }
@@ -50,10 +46,8 @@ function NormalUserMenu() {
     <Menu
       theme="dark"
       mode="inline"
-      defaultSelectedKeys={["My profile"]}
-      items={[
-        item("My profile", "/profile",<UserOutlined />),
-      ]}
+      defaultSelectedKeys={['My profile']}
+      items={[item('My profile', '/profile', <UserOutlined />)]}
     />
   );
 }
@@ -63,10 +57,8 @@ function AdminMenu() {
     <Menu
       theme="dark"
       mode="inline"
-      defaultSelectedKeys={["My profile"]}
-      items={[
-        item("My profile", "/profile", <UserOutlined/>),
-      ]}
+      defaultSelectedKeys={['My profile']}
+      items={[item('My profile', '/profile', <UserOutlined />)]}
     />
   );
 }
@@ -76,10 +68,8 @@ function SuperAdminMenu() {
     <Menu
       theme="dark"
       mode="inline"
-      defaultSelectedKeys={["My profile"]}
-      items={[
-        item("My profile", "/profile", <UserOutlined/>),
-      ]}
+      defaultSelectedKeys={['My profile']}
+      items={[item('My profile', '/profile', <UserOutlined />)]}
     />
   );
 }

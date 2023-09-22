@@ -1,4 +1,4 @@
-export type UserRoles = "SUPERADMIN" | "ADMIN" | "USER";
+export type UserRoles = 'SUPERADMIN' | 'ADMIN' | 'USER';
 
 export type UserSession = {
   id: string;

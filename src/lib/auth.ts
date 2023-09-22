@@ -1,30 +1,30 @@
-import prisma from "@/lib/prisma";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { compare } from "bcryptjs";
-import { getServerSession, type NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { UserSession } from "./types";
+import prisma from '@/lib/prisma';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { compare } from 'bcryptjs';
+import { getServerSession, type NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { UserSession } from './types';
 
 export const authOptions: NextAuthOptions = {
   // This is a temporary fix for prisma client.
   // @see https://github.com/prisma/prisma/issues/16117
   adapter: PrismaAdapter(prisma as any),
   pages: {
-    signIn: "/login",
+    signIn: '/login',
   },
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
   providers: [
     CredentialsProvider({
-      name: "Sign in",
+      name: 'Sign in',
       credentials: {
         email: {
-          label: "Email",
-          type: "email",
-          placeholder: "example@example.com",
+          label: 'Email',
+          type: 'email',
+          placeholder: 'example@example.com',
         },
-        password: { label: "Password", type: "password" },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
@@ -97,7 +97,6 @@ export async function getUserSession(context?: any) {
   } as UserSession;
 }
 
-
 export function hasAdminPermissions(session?: UserSession) {
-  return session?.role === "ADMIN";
+  return session?.role === 'ADMIN';
 }

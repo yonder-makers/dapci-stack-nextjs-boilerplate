@@ -1,6 +1,6 @@
-import { message } from "antd";
-import { MessageInstance } from "antd/es/message/interface";
-import { createContext, useContext, useMemo } from "react";
+import { message } from 'antd';
+import { MessageInstance } from 'antd/es/message/interface';
+import { createContext, useContext, useMemo } from 'react';
 
 type NotificationsValue = MessageInstance;
 
