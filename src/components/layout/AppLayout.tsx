@@ -10,10 +10,9 @@ const { Sider, Content } = Layout;
 
 type AppLayoutProps = {
   children: React.ReactNode;
-  user?: UserSession;
+  userSession?: UserSession;
 };
 export function AppLayout(props: AppLayoutProps) {
-  console.log(props);
   const { children } = props;
   const [collapsed, setCollapsed] = useState(false);
   const {
@@ -25,7 +24,7 @@ export function AppLayout(props: AppLayoutProps) {
       <Layout className="min-h-screen">
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div className="app-logo" />
-          <SideMenu user={props.user} />
+          <SideMenu user={props.userSession} />
         </Sider>
         <Layout>
           <Layout.Header style={{ padding: 0, background: colorBgContainer }}>
@@ -45,7 +44,7 @@ export function AppLayout(props: AppLayoutProps) {
                 />
               </Col>
               <Col span={14} className="pe-4 text-right">
-                <HeaderWelcomeMessage user={props.user} />
+                <HeaderWelcomeMessage user={props.userSession} />
               </Col>
             </Row>
           </Layout.Header>

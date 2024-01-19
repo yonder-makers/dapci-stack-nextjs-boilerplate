@@ -11,10 +11,10 @@ export default function Page(
 ) {
   return (
     <div>
-      <div>Name: {props.user?.name} </div>
-      <div>Email: {props.user?.email} </div>
-      <div>Role: {props.user?.role} </div>
-      <div>Company: {props.user?.companyId ?? 'None'} </div>
+      <div>Name: {props.userSession?.name} </div>
+      <div>Email: {props.userSession?.email} </div>
+      <div>Role: {props.userSession?.role} </div>
+      <div>Company: {props.userSession?.companyId ?? 'None'} </div>
     </div>
   );
 }

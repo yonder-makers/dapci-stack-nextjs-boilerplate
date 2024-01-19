@@ -50,7 +50,7 @@ export function withAuth<
 
     return {
       props: {
-        user: session ?? null,
+        userSession: session ?? null,
         params: context.params || null,
         ...output,
       },
@@ -59,12 +59,12 @@ export function withAuth<
 }
 
 function hasAccess(
-  user: UserSession | undefined,
+  userSession: UserSession | undefined,
   role: UserRoles | 'ANONYMOUS',
   companyId?: string,
 ) {
-  const userRole = user?.role || 'ANONYMOUS';
-  const userCompanyId = user?.companyId || undefined;
+  const userRole = userSession?.role || 'ANONYMOUS';
+  const userCompanyId = userSession?.companyId || undefined;
 
   if (userRole === 'SUPERADMIN') return true;
 

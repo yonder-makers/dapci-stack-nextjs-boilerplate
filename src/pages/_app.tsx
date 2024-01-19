@@ -9,19 +9,19 @@ export default function App({ Component, pageProps }: AppProps<WithAuthType>) {
     return <Component {...pageProps} />;
   }
 
-  const user = pageProps.user || undefined;
+  const user = pageProps.userSession || undefined;
 
   const errorMessage = (pageProps as any).errorMessage;
   if (errorMessage) {
     return (
-      <AppLayout user={user}>
+      <AppLayout userSession={user}>
         <p>{errorMessage}</p>
       </AppLayout>
     );
   }
 
   return (
-    <AppLayout user={user}>
+    <AppLayout userSession={user}>
       <Component {...pageProps} />
     </AppLayout>
   );
