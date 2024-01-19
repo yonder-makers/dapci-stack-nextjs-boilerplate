@@ -16,11 +16,9 @@ export const getServerSideProps = withAuth(
       select: {
         id: true,
         name: true,
-        users: {
+        _count: {
           select: {
-            id: true,
-            name: true,
-            email: true,
+            users: true,
           },
         },
       },
@@ -34,7 +32,11 @@ export const getServerSideProps = withAuth(
     }
 
     return {
-      company,
+      company: {
+        id: company.id,
+        name: company.name,
+        numberOfUsers: company._count.users,
+      },
     };
   },
 );
@@ -47,7 +49,7 @@ export default function Page(
   const breadCrumbItems = [
     { title: <Link href="/">Home</Link> },
     { title: <Link href="/companies">Companies</Link> },
-    { title: `Edit ${company.name}` },
+    { title: `${company.name}` },
   ];
 
   return (
@@ -58,7 +60,9 @@ export default function Page(
         <CompanyGeneralForm initialState={company} />
       </Card>
       <Card title="Members" size="small">
-        todo
+        <Link href={`/companies/${company.id}/users`}>
+          Manage {company.numberOfUsers} members
+        </Link>
       </Card>
     </Space>
   );

@@ -21,7 +21,7 @@ export default function Page(
     <Space direction="vertical" size={16} className="w-full">
       <Breadcrumb items={breadCrumbItems} />
       <Typography.Title level={2}>Create company</Typography.Title>
-      <Card>
+      <Card title="General info" size="small">
         <CompanyGeneralForm initialState={{ name: '' }} />
       </Card>
     </Space>
