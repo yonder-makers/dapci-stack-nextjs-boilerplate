@@ -13,6 +13,7 @@ type AppLayoutProps = {
   user?: UserSession;
 };
 export function AppLayout(props: AppLayoutProps) {
+  console.log(props);
   const { children } = props;
   const [collapsed, setCollapsed] = useState(false);
   const {

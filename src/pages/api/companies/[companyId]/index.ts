@@ -16,7 +16,6 @@ export default withApiAuth<CompanyRequest, CompanyResponse>(
       }
 
       const companyId = req.query.companyId as string;
-      console.log(companyId);
 
       // todo: should compare with case insensitive
       const existing = await prisma.company.findUnique({

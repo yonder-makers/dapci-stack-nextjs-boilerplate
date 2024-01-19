@@ -13,9 +13,11 @@ export default function App({ Component, pageProps }: AppProps<WithAuthType>) {
 
   const errorMessage = (pageProps as any).errorMessage;
   if (errorMessage) {
-    <AppLayout user={user}>
-      <p>{errorMessage}</p>;
-    </AppLayout>;
+    return (
+      <AppLayout user={user}>
+        <p>{errorMessage}</p>
+      </AppLayout>
+    );
   }
 
   return (

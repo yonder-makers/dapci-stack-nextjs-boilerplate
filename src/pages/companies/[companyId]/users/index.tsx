@@ -88,7 +88,7 @@ export default function Page(
           <Button type="primary">Create</Button>
         </Link>
       </Flex>
-      <UsersList users={filteredUsers} />
+      <UsersList companyId={company.id} users={filteredUsers} />
     </Space>
   );
 }
@@ -99,34 +99,42 @@ type User = {
   email: string;
 };
 
-const columns: ColumnsType<User> = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    sorter: (a, b) => a.name.localeCompare(b.name),
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-    key: 'email',
-    sorter: (a, b) => a.name.localeCompare(b.name),
-  },
-  {
-    title: '',
-    key: 'action',
-    render: (_, record) => (
-      <Link href={`/companies/${record.id}/edit`}>edit</Link>
-    ),
-  },
-];
+function getColumns(companyId: string) {
+  const columns: ColumnsType<User> = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      sorter: (a, b) => a.name.localeCompare(b.name),
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      sorter: (a, b) => a.name.localeCompare(b.name),
+    },
+    {
+      title: '',
+      key: 'action',
+      render: (_, record) => (
+        <Link href={`/companies/${companyId}/users/${record.id}/edit`}>
+          edit
+        </Link>
+      ),
+    },
+  ];
+
+  return columns;
+}
 
 type UsersListProps = {
+  companyId: string;
   users: User[];
 };
 
 function UsersList(props: UsersListProps) {
   const users = props.users;
+  const columns = getColumns(props.companyId);
 
   return (
     <Card size="small">

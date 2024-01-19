@@ -98,6 +98,9 @@ const columns: ColumnsType<Company> = [
     dataIndex: 'numberOfUsers',
     key: 'numberOfUsers',
     sorter: true,
+    render: (numberOfUsers, record) => (
+      <Link href={`/companies/${record.id}/users`}>{numberOfUsers} users</Link>
+    ),
   },
   {
     title: 'Created at',
