@@ -19,8 +19,8 @@ model User {
   companyId     String?   @map("company_id")
   role          Role      @default(USER)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   company Company? @relation(fields: [companyId], references: [id])
 
@@ -30,10 +30,11 @@ model User {
 model Company {
   id        String   @id
   name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  users          User[]
+  users    User[]
+  TodoList TodoList[]
 
   @@map("companies")
 }
@@ -42,4 +43,30 @@ enum Role {
   USER
   ADMIN
   SUPERADMIN
+}
+
+model TodoList {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  companyId String   @map("company_id")
+  company   Company? @relation(fields: [companyId], references: [id])
+
+  items TodoItem[]
+
+  @@map("todo_lists")
+}
+
+model TodoItem {
+  id        String   @id @default(uuid())
+  name      String
+  listId    String   @map("list_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  list TodoList @relation(fields: [listId], references: [id])
+
+  @@map("todo_items")
 }

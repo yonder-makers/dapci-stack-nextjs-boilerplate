@@ -9,7 +9,7 @@ npx prisma migrate diff \
 
 # another way
 
-npx prisma migrate dev --name "the_migration_name"
+npx prisma migrate dev --name "the_migration_name" --create-only
 
 # deploy to production db
 

@@ -69,7 +69,10 @@ function SuperAdminMenu() {
       theme="dark"
       mode="inline"
       defaultSelectedKeys={['My profile']}
-      items={[item('My profile', '/profile', <UserOutlined />)]}
+      items={[
+        item('My profile', '/profile', <UserOutlined />),
+        item('Companies', '/companies', <UserOutlined />),
+      ]}
     />
   );
 }
