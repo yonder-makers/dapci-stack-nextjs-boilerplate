@@ -1,6 +1,7 @@
 import { UserRequest, UserResponse } from '@/lib/apis/user.api';
 import { withApiAuth } from '@/lib/hocs';
 import prisma from '@/lib/prisma';
+import { hash } from 'bcryptjs';
 
 function trimAndValidateBody(body: UserRequest) {
   body.name = body.name?.trim() || '';
@@ -63,11 +64,13 @@ export default withApiAuth<UserRequest, UserResponse>(
         return res.status(409).json({ errorMessage: 'User already exists' });
       }
 
+      const hashedPassowrd = await hash(body.password!, 12);
+
       const newUser = await prisma.user.create({
         data: {
           name: body.name,
           email: body.email,
-          password: body.password!,
+          password: hashedPassowrd,
           companyId,
           role: 'ADMIN', // the only role supported for now
         },

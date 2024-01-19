@@ -88,7 +88,7 @@ export function UserGeneralForm(props: UserGeneralFormProps) {
           name="password"
           rules={[{ required: true, message: 'Please insert text' }]}
         >
-          <Input
+          <Input.Password
             value={formState.password}
             onChange={(e) =>
               setFormState({ ...formState, password: e.target.value })

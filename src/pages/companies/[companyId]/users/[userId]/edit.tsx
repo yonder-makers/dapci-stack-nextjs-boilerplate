@@ -1,3 +1,4 @@
+import { ResetPasswordForm } from '@/components/forms/ResetPasswordForm';
 import { UserGeneralForm } from '@/components/forms/UserGeneralForm';
 import { withAuth } from '@/lib/hocs';
 import prisma from '@/lib/prisma';
@@ -81,6 +82,9 @@ export default function Page(
             email: user.email,
           }}
         />
+      </Card>
+      <Card title="Reset password" size="small">
+        <ResetPasswordForm companyId={company.id} userId={user.id} />
       </Card>
     </Space>
   );

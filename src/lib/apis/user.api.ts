@@ -11,6 +11,14 @@ export type UserResponse = {
   companyId?: string;
 };
 
+export type ResetPasswordRequest = {
+  password: string;
+};
+
+export type ResetPasswordResponse = {
+  success: true;
+};
+
 export async function createUser(companyId: string, user: UserRequest) {
   const url = `/api/companies/${companyId}/users`;
   const body: UserRequest = {
@@ -51,4 +59,26 @@ export async function updateUser(
   const response = await request.json();
 
   return response as UserResponse;
+}
+
+export async function resetPassword(
+  companyId: string,
+  userId: string,
+  password: string,
+) {
+  const url = `/api/companies/${companyId}/users/${userId}/reset-password`;
+
+  const body: ResetPasswordRequest = {
+    password,
+  };
+
+  const request = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  const response = await request.json();
+
+  return response as ResetPasswordResponse;
 }
