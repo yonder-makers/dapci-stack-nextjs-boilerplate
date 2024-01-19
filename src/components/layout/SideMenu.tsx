@@ -2,6 +2,7 @@ import { UserSession } from '@/lib/types';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 type SideMenuProps = {
@@ -14,7 +15,7 @@ export function SideMenu(props: SideMenuProps) {
     case 'SUPERADMIN':
       return <SuperAdminMenu />;
     case 'ADMIN':
-      return <AdminMenu />;
+      return <AdminMenu user={props.user!} />;
     case 'USER':
       return <NormalUserMenu />;
     default:
@@ -52,13 +53,21 @@ function NormalUserMenu() {
   );
 }
 
-function AdminMenu() {
+function AdminMenu({ user }: { user: UserSession }) {
+  const router = useRouter();
+  let selectedKey = 'My profile';
+  if (router.pathname.includes('/companies/[companyId]/users')) {
+    selectedKey = 'Users';
+  }
   return (
     <Menu
       theme="dark"
       mode="inline"
-      defaultSelectedKeys={['My profile']}
-      items={[item('My profile', '/profile', <UserOutlined />)]}
+      defaultSelectedKeys={[selectedKey]}
+      items={[
+        item('My profile', '/profile', <UserOutlined />),
+        item('Users', `/companies/${user.companyId}/users`, <UserOutlined />),
+      ]}
     />
   );
 }

@@ -50,7 +50,7 @@ export function UserGeneralForm(props: UserGeneralFormProps) {
 
   return (
     <Form
-      name="basic"
+      name="user-general-form"
       layout="vertical"
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}

@@ -42,7 +42,7 @@ export function CompanyGeneralForm(props: { initialState: FormFields }) {
 
   return (
     <Form
-      name="basic"
+      name="company-general-form"
       layout="vertical"
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}

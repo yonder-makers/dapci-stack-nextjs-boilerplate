@@ -32,7 +32,7 @@ export function ResetPasswordForm(props: ResetPasswordFormProps) {
 
   return (
     <Form<FormFields>
-      name="basic"
+      name="reset-password-form"
       layout="vertical"
       style={{ maxWidth: 300 }}
       initialValues={{ password: '' }}
