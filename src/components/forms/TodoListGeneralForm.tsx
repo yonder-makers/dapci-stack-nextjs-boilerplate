@@ -1,4 +1,4 @@
-import { createCompany, updateCompany } from '@/lib/apis/company.api';
+import { createTodoList, updateTodoList } from '@/lib/apis/todoList.api';
 import { useNotifications } from '@/providers/notification.providers';
 import { Button, Form, Input } from 'antd';
 import { useRouter } from 'next/navigation';
@@ -8,8 +8,8 @@ type FormFields = {
   name: string;
 };
 
-export function CompanyGeneralForm(props: {
-  companyId?: string;
+export function TodoListGeneralForm(props: {
+  todoListId?: string;
   initialState: FormFields;
 }) {
   const [form] = Form.useForm();
@@ -23,15 +23,15 @@ export function CompanyGeneralForm(props: {
     setIsLoading(true);
 
     try {
-      if (props.companyId === undefined) {
-        const company = await createCompany(values.name);
-        notifications.success('Company created');
+      if (props.todoListId === undefined) {
+        const todoList = await createTodoList(values.name);
+        notifications.success('Todo list created');
 
-        router.push(`/companies/${company.id}/edit`);
+        router.push(`/todo-lists/${todoList.id}/edit`);
       } else {
-        const company = await updateCompany(props.companyId, values.name);
-        form.setFieldsValue(company);
-        notifications.success('Company updated');
+        const todoList = await updateTodoList(props.todoListId, values.name);
+        form.setFieldsValue(todoList);
+        notifications.success('Todo list updated');
       }
     } finally {
       setIsLoading(false);
@@ -40,7 +40,7 @@ export function CompanyGeneralForm(props: {
 
   return (
     <Form
-      name="company-general-form"
+      name="todo-list-general-form"
       form={form}
       layout="vertical"
       labelCol={{ span: 8 }}

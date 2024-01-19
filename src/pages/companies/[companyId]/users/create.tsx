@@ -1,10 +1,9 @@
-import { CompanyGeneralForm } from '@/components/forms/CompanyGeneralForm';
+import { UserGeneralForm } from '@/components/forms/UserGeneralForm';
 import { withAuth } from '@/lib/hocs';
+import prisma from '@/lib/prisma';
 import { Breadcrumb, Card, Space, Typography } from 'antd';
 import { InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
-import prisma from '@/lib/prisma';
-import { UserGeneralForm } from '@/components/forms/UserGeneralForm';
 
 type PageParams = { companyId: string };
 

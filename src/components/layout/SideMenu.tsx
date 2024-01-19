@@ -59,6 +59,10 @@ function AdminMenu({ user }: { user: UserSession }) {
   if (router.pathname.includes('/companies/[companyId]/users')) {
     selectedKey = 'Users';
   }
+  if (router.pathname.includes('/todo-lists')) {
+    selectedKey = 'Todo lists';
+  }
+
   return (
     <Menu
       theme="dark"
@@ -67,6 +71,7 @@ function AdminMenu({ user }: { user: UserSession }) {
       items={[
         item('My profile', '/profile', <UserOutlined />),
         item('Users', `/companies/${user.companyId}/users`, <UserOutlined />),
+        item('Todo lists', '/todo-lists', <UserOutlined />),
       ]}
     />
   );

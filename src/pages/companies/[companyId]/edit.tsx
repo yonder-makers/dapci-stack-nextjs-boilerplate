@@ -57,7 +57,7 @@ export default function Page(
       <Breadcrumb items={breadCrumbItems} />
       <Typography.Title level={2}>Edit {company.name}</Typography.Title>
       <Card title="General info" size="small">
-        <CompanyGeneralForm initialState={company} />
+        <CompanyGeneralForm companyId={company.id} initialState={company} />
       </Card>
       <Card title="Members" size="small">
         <Link href={`/companies/${company.id}/users`}>
