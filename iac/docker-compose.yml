@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  autoheal:
+    restart: unless-stopped
+    image: willfarrell/autoheal
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=all
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  cloudflare-tunnel:
+    restart: unless-stopped
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TOKEN}
+    depends_on:
+      - traefik
+
+  traefik:
+    restart: unless-stopped
+    image: traefik:v2.10
+    ports:
+      - '80:80'
+    #   - '8080:8080'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik:/etc/traefik
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.traefik-dashboard.priority=100'
+      - 'traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${DOMAIN_NAME}`)'
+      - 'traefik.http.services.traefik-dashboard.loadbalancer.server.port=8080'
+
+  nextjs-app:
+    restart: unless-stopped
+    build:
+      context: ../
+      dockerfile: ./Dockerfile
+    # ports:
+    #   - 3000:3000
+    volumes:
+      - ./nextjs-app/.env:/app/.env
+    depends_on:
+      - postgres-db
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.nextjs-app.rule=Host(`${DOMAIN_NAME}`)'
+      - 'traefik.http.services.nextjs-app.loadbalancer.server.port=3000'
+
+  postgres-db:
+    restart: unless-stopped
+    image: postgres:latest
+    volumes:
+      - postgres-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    # ports:
+    #   - 5432:5432
+
+volumes:
+  postgres-db-data:

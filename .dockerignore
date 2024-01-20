@@ -1,7 +1,15 @@
+.devcontainer
+.github
 .next
+iac
 node_modules
 .dockerignore
+.env
+.env.template
+.eslintrc.json
 .gitignore
+.prettierrc
 Dockerfile
 LICENSE
+next-env.d.ts
 README.md
