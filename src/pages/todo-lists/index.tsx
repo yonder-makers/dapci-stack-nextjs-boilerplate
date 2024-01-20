@@ -99,6 +99,9 @@ const columns: ColumnsType<TodoList> = [
     dataIndex: 'name',
     key: 'name',
     sorter: (a, b) => a.name.localeCompare(b.name),
+    render: (text, record) => (
+      <Link href={`/todo-lists/${record.id}`}>{text}</Link>
+    ),
   },
   {
     title: 'Items',
