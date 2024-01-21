@@ -11,6 +11,10 @@ export type TodoItemResponse = {
   assigneeIds: string[];
 };
 
+export type TodoItemDeletedResponse = {
+  id: string;
+};
+
 export async function createTodoItem(
   todoListId: string,
   item: TodoItemRequest,
@@ -62,4 +66,15 @@ export async function updateTodoItemIsDone(
   const response = await request.json();
 
   return response as TodoItemResponse;
+}
+
+export async function deleteTodoItem(todoListId: string, itemId: string) {
+  const url = `/api/todo-lists/${todoListId}/items/${itemId}`;
+
+  const request = await fetch(url, {
+    method: 'DELETE',
+  });
+
+  const response = await request.json();
+  return response as TodoItemDeletedResponse;
 }

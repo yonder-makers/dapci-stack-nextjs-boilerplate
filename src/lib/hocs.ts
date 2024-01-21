@@ -8,7 +8,7 @@ import { ParsedUrlQuery } from 'querystring';
 import { getUserSession } from './auth';
 import { UserRoles, UserSession } from './types';
 
-type ErrorOutput = { errorMessage: string };
+export type ErrorOutput = { errorMessage: string };
 type OutputTypes = {} | ErrorOutput;
 
 export function withAuth<

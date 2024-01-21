@@ -1,5 +1,5 @@
 import { TodoItemGeneralForm } from '@/components/forms/TodoItemGeneralForm';
-import { updateTodoItemIsDone } from '@/lib/apis/todoItem.api';
+import { deleteTodoItem, updateTodoItemIsDone } from '@/lib/apis/todoItem.api';
 import { withAuth } from '@/lib/hocs';
 import prisma from '@/lib/prisma';
 import {
@@ -11,6 +11,7 @@ import {
   Input,
   List,
   Modal,
+  Popconfirm,
   Space,
   Tag,
   Typography,
@@ -118,6 +119,10 @@ export default function Page(
     }
   }
 
+  function deleteItem(id: string) {
+    setTodoItems(todoItems.filter((i) => i.id !== id));
+  }
+
   return (
     <Space direction="vertical" size={16} className="w-full">
       <Breadcrumb items={breadCrumbItems} />
@@ -138,6 +143,7 @@ export default function Page(
         companyUsers={props.companyUsers}
         onStartEditing={(item) => setEditingItemId(item.id)}
         onItemUpdated={updateItem}
+        onItemDeleted={deleteItem}
       />
       <TodoItemModal
         items={todoItems}
@@ -168,6 +174,7 @@ type ItemsListProps = {
   companyUsers: { id: string; name: string }[];
   onStartEditing: (item: TodoItem) => void;
   onItemUpdated: (item: TodoItem) => void;
+  onItemDeleted: (id: string) => void;
 };
 
 function ItemsList(props: ItemsListProps) {
@@ -178,6 +185,11 @@ function ItemsList(props: ItemsListProps) {
       !item.isDone,
     );
     props.onItemUpdated(newItem);
+  }
+
+  async function onDeleteItem(item: TodoItem) {
+    const newItem = await deleteTodoItem(props.listId, item.id);
+    props.onItemDeleted(newItem.id);
   }
 
   return (
@@ -195,6 +207,18 @@ function ItemsList(props: ItemsListProps) {
               >
                 edit
               </Button>,
+              <Popconfirm
+                key="delete"
+                title="Delete the item"
+                description="Are you sure to delete this item?"
+                onConfirm={() => onDeleteItem(item)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button type="link" danger>
+                  delete
+                </Button>
+              </Popconfirm>,
             ]}
           >
             <List.Item.Meta
