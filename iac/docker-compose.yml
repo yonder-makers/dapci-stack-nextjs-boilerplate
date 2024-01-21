@@ -40,6 +40,8 @@ services:
     #   - 3000:3000
     volumes:
       - ./nextjs-app/.env:/app/.env
+      - ../__data/avatars/:/app/public/avatars
+      - ../__data/_temp-upload/:/app/_temp-upload
     depends_on:
       - postgres-db
     labels:

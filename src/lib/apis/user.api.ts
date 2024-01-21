@@ -66,3 +66,11 @@ export async function resetPassword(
 
   return response.data;
 }
+
+export async function deleteAvatar(companyId: string, userId: string) {
+  const url = `/api/companies/${companyId}/users/${userId}/avatar`;
+
+  const response = await axios.delete(url);
+
+  return response.data;
+}

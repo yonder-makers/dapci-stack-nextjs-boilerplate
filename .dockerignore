@@ -13,3 +13,6 @@ Dockerfile
 LICENSE
 next-env.d.ts
 README.md
+
+\_temp-upload
+public/avatars

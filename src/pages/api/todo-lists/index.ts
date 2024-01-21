@@ -38,7 +38,7 @@ export default withApiAuth<TodoListRequest, TodoListResponse>(
         data: {
           id: generateGuid(),
           name,
-          companyId: session.companyId,
+          companyId: session.companyId!,
         },
       });
 

@@ -1,5 +1,7 @@
 import { ResetPasswordForm } from '@/components/forms/ResetPasswordForm';
+import { UserAvatarUpload } from '@/components/forms/UserAvatarUpload';
 import { UserGeneralForm } from '@/components/forms/UserGeneralForm';
+import { getAvatarUrlIfExist } from '@/lib/avatar-utils';
 import { withAuth } from '@/lib/hocs';
 import prisma from '@/lib/prisma';
 import { Breadcrumb, Card, Space, Typography } from 'antd';
@@ -23,7 +25,9 @@ export const getServerSideProps = withAuth('USER', async function (session) {
     throw new Error('User not found');
   }
 
-  return { user };
+  const avatarUrl = getAvatarUrlIfExist(user.id) || null;
+
+  return { user, avatarUrl };
 });
 
 export default function Page(
@@ -51,6 +55,13 @@ export default function Page(
       </Card>
       <Card title="Reset password" size="small">
         <ResetPasswordForm companyId={user.companyId!} userId={user.id} />
+      </Card>
+      <Card title="Profile picture" size="small">
+        <UserAvatarUpload
+          companyId={user.companyId!}
+          userId={user.id}
+          avatarUrl={props.avatarUrl || undefined}
+        />
       </Card>
     </Space>
   );

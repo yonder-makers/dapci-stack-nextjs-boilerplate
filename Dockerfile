@@ -21,5 +21,8 @@ COPY ./prisma /app/prisma
 COPY ./public /app/public
 COPY ./start.sh /app/start.sh
 
+RUN mkdir /app/public/avatars
+RUN mkdir /app/_temp-upload
+
 EXPOSE 3000
 ENTRYPOINT ["/bin/sh", "start.sh"]
