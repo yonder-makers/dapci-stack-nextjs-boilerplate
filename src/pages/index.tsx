@@ -1,15 +1,14 @@
+import { withAuth } from '@/lib/hocs';
+import prisma from '@/lib/prisma';
+import { Typography } from 'antd';
 import { InferGetServerSidePropsType } from 'next';
 
-export function getServerSideProps() {
-  return {
-    props: { hey: 3 },
-  };
-}
+export const getServerSideProps = withAuth('ANONYMOUS', async function () {
+  return {};
+});
 
-export default function Home(
+export default function Page(
   props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) {
-  console.log('b1sau');
-
-  return <div>Ceva: {props.hey}</div>;
+  return <Typography.Title level={2}>Welcome</Typography.Title>;
 }

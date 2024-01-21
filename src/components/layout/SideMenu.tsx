@@ -55,7 +55,10 @@ function NormalUserMenu() {
 
 function AdminMenu({ user }: { user: UserSession }) {
   const router = useRouter();
-  let selectedKey = 'My profile';
+  let selectedKey = 'Home';
+  if (router.pathname.includes('/profile')) {
+    selectedKey = 'My profile';
+  }
   if (router.pathname.includes('/companies/[companyId]/users')) {
     selectedKey = 'Users';
   }
@@ -67,8 +70,9 @@ function AdminMenu({ user }: { user: UserSession }) {
     <Menu
       theme="dark"
       mode="inline"
-      defaultSelectedKeys={[selectedKey]}
+      selectedKeys={[selectedKey]}
       items={[
+        item('Home', '/', <UserOutlined />),
         item('My profile', '/profile', <UserOutlined />),
         item('Users', `/companies/${user.companyId}/users`, <UserOutlined />),
         item('Todo lists', '/todo-lists', <UserOutlined />),
