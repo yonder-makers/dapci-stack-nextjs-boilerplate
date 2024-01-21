@@ -80,8 +80,8 @@ model TodoItemAssignee {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
-  item TodoItem @relation(fields: [todoItemId], references: [id])
-  user User     @relation(fields: [userId], references: [id])
+  todoItem TodoItem @relation(fields: [todoItemId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
 
   @@unique([todoItemId, userId])
   @@map("todo_item_assignees")

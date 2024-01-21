@@ -14,11 +14,11 @@ export default withApiAuth<
 >('ADMIN', async (session, body, req, res) => {
   {
     if (req.method === 'POST') {
-      return doEdit(session, body, req, res);
+      return await doEdit(session, body, req, res);
     }
 
     if (req.method === 'DELETE') {
-      return doDelete(session, body, req, res);
+      return await doDelete(session, body, req, res);
     }
 
     return res.status(405).json({ errorMessage: 'Method not allowed' });

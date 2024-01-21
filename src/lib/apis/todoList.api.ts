@@ -7,6 +7,10 @@ export type TodoListResponse = {
   name: string;
 };
 
+export type TodoListDeletedResponse = {
+  id: string;
+};
+
 export async function createTodoList(name: string) {
   const body = { name } as TodoListRequest;
   const request = await fetch('/api/todo-lists', {
@@ -31,4 +35,13 @@ export async function updateTodoList(id: string, name: string) {
   const response = await request.json();
 
   return response as TodoListResponse;
+}
+
+export async function deleteTodoList(id: string) {
+  const request = await fetch(`/api/todo-lists/${id}`, {
+    method: 'DELETE',
+  });
+
+  const response = await request.json();
+  return response as TodoListDeletedResponse;
 }

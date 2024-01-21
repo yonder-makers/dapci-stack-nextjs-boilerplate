@@ -1,12 +1,15 @@
+import { deleteTodoList } from '@/lib/apis/todoList.api';
 import { withAuth } from '@/lib/hocs';
 import prisma from '@/lib/prisma';
 import { formatRelativeDate } from '@/lib/utils';
+import { useNotifications } from '@/providers/notification.providers';
 import {
   Breadcrumb,
   Button,
   Card,
   Flex,
   Input,
+  Popconfirm,
   Space,
   Table,
   Typography,
@@ -52,8 +55,9 @@ export const getServerSideProps = withAuth('ADMIN', async function (session) {
 export default function Page(
   props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) {
-  const lists = props.lists;
+  const notifications = useNotifications();
 
+  const [lists, setLists] = useState(props.lists);
   const [searchText, setSearchText] = useState('');
 
   const filteredLists = useMemo(() => {
@@ -66,6 +70,16 @@ export default function Page(
     { title: <Link href="/">Home</Link> },
     { title: `Todo lists` },
   ];
+
+  async function deleteItem(item: TodoList) {
+    try {
+      const response = await deleteTodoList(item.id);
+
+      setLists(lists.filter((list) => list.id !== response.id));
+    } catch (error) {
+      notifications.error("Couldn't delete todo list");
+    }
+  }
 
   return (
     <Space direction="vertical" size={16} className="w-full">
@@ -81,7 +95,7 @@ export default function Page(
           <Button type="primary">Create</Button>
         </Link>
       </Flex>
-      <TodoListTable lists={filteredLists} />
+      <TodoListTable lists={filteredLists} onDeleteItem={deleteItem} />
     </Space>
   );
 }
@@ -93,38 +107,56 @@ type TodoList = {
   numberOfItems: number;
 };
 
-const columns: ColumnsType<TodoList> = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    sorter: (a, b) => a.name.localeCompare(b.name),
-    render: (text, record) => (
-      <Link href={`/todo-lists/${record.id}`}>{text}</Link>
-    ),
-  },
-  {
-    title: 'Items',
-    dataIndex: 'numberOfItems',
-    key: 'numberOfItems',
-    sorter: true,
-  },
-  {
-    title: 'Created at',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
-  },
-  {
-    title: '',
-    key: 'action',
-    render: (_, record) => (
-      <Link href={`/todo-lists/${record.id}/edit`}>edit</Link>
-    ),
-  },
-];
+function getColumns(onDeleteItem: (item: TodoList) => void) {
+  const columns: ColumnsType<TodoList> = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      sorter: (a, b) => a.name.localeCompare(b.name),
+      render: (text, record) => (
+        <Link href={`/todo-lists/${record.id}`}>{text}</Link>
+      ),
+    },
+    {
+      title: 'Items',
+      dataIndex: 'numberOfItems',
+      key: 'numberOfItems',
+      sorter: true,
+    },
+    {
+      title: 'Created at',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+    },
+    {
+      title: '',
+      key: 'action',
+      render: (_, record) => (
+        <Flex justify="end" align="center">
+          <Link href={`/todo-lists/${record.id}/edit`}>edit</Link>
+          <Popconfirm
+            title="Are you sure to delete this todo list?"
+            onConfirm={() => {
+              onDeleteItem(record);
+            }}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button type="link" danger>
+              delete
+            </Button>
+          </Popconfirm>
+        </Flex>
+      ),
+    },
+  ];
+  return columns;
+}
 
 type TodoListTableProps = {
   lists: TodoList[];
+  onDeleteItem: (item: TodoList) => void;
 };
 
 function TodoListTable(props: TodoListTableProps) {
@@ -135,7 +167,7 @@ function TodoListTable(props: TodoListTableProps) {
       <Table
         size="small"
         rowKey="id"
-        columns={columns}
+        columns={getColumns(props.onDeleteItem)}
         dataSource={employees}
       />
     </Card>
