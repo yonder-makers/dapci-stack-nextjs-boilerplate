@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export type UserRequest = {
   name: string;
   email: string;
@@ -27,15 +29,9 @@ export async function createUser(companyId: string, user: UserRequest) {
     password: user.password,
   };
 
-  const request = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const response = await axios.post<UserResponse>(url, body);
 
-  const response = await request.json();
-
-  return response as UserResponse;
+  return response.data;
 }
 
 export async function updateUser(
@@ -50,15 +46,9 @@ export async function updateUser(
     email: user.email,
   };
 
-  const request = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const response = await axios.post<UserResponse>(url, body);
 
-  const response = await request.json();
-
-  return response as UserResponse;
+  return response.data;
 }
 
 export async function resetPassword(
@@ -72,13 +62,7 @@ export async function resetPassword(
     password,
   };
 
-  const request = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const response = await axios.post<ResetPasswordResponse>(url, body);
 
-  const response = await request.json();
-
-  return response as ResetPasswordResponse;
+  return response.data;
 }

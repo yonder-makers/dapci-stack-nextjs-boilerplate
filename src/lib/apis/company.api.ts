@@ -1,3 +1,4 @@
+import axios from 'axios';
 export type CompanyRequest = {
   name: string;
 };
@@ -9,26 +10,16 @@ export type CompanyResponse = {
 
 export async function createCompany(name: string) {
   const body = { name } as CompanyRequest;
-  const request = await fetch('/api/companies', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const url = '/api/companies';
+  const response = await axios.post<CompanyResponse>(url, body);
 
-  const response = await request.json();
-
-  return response as CompanyResponse;
+  return response.data;
 }
 
 export async function updateCompany(id: string, name: string) {
   const body = { name } as CompanyRequest;
-  const request = await fetch(`/api/companies/${id}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const url = `/api/companies/${id}`;
+  const response = await axios.post<CompanyResponse>(url, body);
 
-  const response = await request.json();
-
-  return response as CompanyResponse;
+  return response.data;
 }

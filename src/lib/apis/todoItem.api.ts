@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export type TodoItemRequest = {
   name: string;
   isDone: boolean;
@@ -22,15 +24,9 @@ export async function createTodoItem(
   const body = item;
   const url = `/api/todo-lists/${todoListId}/items`;
 
-  const request = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const response = await axios.post<TodoItemResponse>(url, body);
 
-  const response = await request.json();
-
-  return response as TodoItemResponse;
+  return response.data;
 }
 
 export async function updateTodoItem(
@@ -41,15 +37,9 @@ export async function updateTodoItem(
   const body = item;
   const url = `/api/todo-lists/${todoListId}/items/${itemId}`;
 
-  const request = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const response = await axios.post<TodoItemResponse>(url, body);
 
-  const response = await request.json();
-
-  return response as TodoItemResponse;
+  return response.data;
 }
 
 export async function updateTodoItemIsDone(
@@ -59,22 +49,20 @@ export async function updateTodoItemIsDone(
 ) {
   const url = `/api/todo-lists/${todoListId}/items/${itemId}/is-done`;
 
-  const request = await fetch(url, {
-    method: isDone ? 'POST' : 'DELETE',
+  const method = isDone ? 'POST' : 'DELETE';
+
+  const response = await axios.request<TodoItemResponse>({
+    url,
+    method,
   });
 
-  const response = await request.json();
-
-  return response as TodoItemResponse;
+  return response.data;
 }
 
 export async function deleteTodoItem(todoListId: string, itemId: string) {
   const url = `/api/todo-lists/${todoListId}/items/${itemId}`;
 
-  const request = await fetch(url, {
-    method: 'DELETE',
-  });
+  const response = await axios.delete<TodoItemDeletedResponse>(url);
 
-  const response = await request.json();
-  return response as TodoItemDeletedResponse;
+  return response.data;
 }

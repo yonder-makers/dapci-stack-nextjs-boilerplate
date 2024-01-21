@@ -10,7 +10,11 @@
       "extensions": [
         "Prisma.prisma",
         "esbenp.prettier-vscode",
-        "cweijan.vscode-redis-client"
+        "cweijan.vscode-redis-client",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "GitHub.vscode-pull-request-github",
+        "eamodio.gitlens"
       ]
     }
   },
