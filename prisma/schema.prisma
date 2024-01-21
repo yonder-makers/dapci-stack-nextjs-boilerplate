@@ -75,14 +75,14 @@ model TodoItem {
 }
 
 model TodoItemAssignee {
-  todoItem  String   @map("item_id")
-  userId    String   @map("user_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  todoItemId String   @map("todo_item_id")
+  userId     String   @map("user_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
-  item TodoItem @relation(fields: [todoItem], references: [id])
+  item TodoItem @relation(fields: [todoItemId], references: [id])
   user User     @relation(fields: [userId], references: [id])
 
-  @@unique([todoItem, userId])
+  @@unique([todoItemId, userId])
   @@map("todo_item_assignees")
 }

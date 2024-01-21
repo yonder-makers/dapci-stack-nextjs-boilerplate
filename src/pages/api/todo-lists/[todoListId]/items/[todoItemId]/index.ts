@@ -131,7 +131,7 @@ async function doDelete(
   // first lets delete all assignees
   await prisma.todoItemAssignee.deleteMany({
     where: {
-      todoItem: todoItemId,
+      todoItemId: todoItemId,
     },
   });
 
