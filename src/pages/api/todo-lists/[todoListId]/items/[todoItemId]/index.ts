@@ -52,14 +52,35 @@ export default withApiAuth<TodoItemRequest, TodoItemResponse>(
         },
         data: {
           name: body.name,
+          assignees: {
+            deleteMany: {},
+            createMany: {
+              data: body.assigneeIds.map((userId) => ({
+                userId,
+              })),
+            },
+          },
         },
         select: {
           id: true,
           name: true,
+          assignees: {
+            select: {
+              userId: true,
+            },
+          },
         },
       });
 
-      return res.status(201).json(updatedTodoItem);
+      const response: TodoItemResponse = {
+        id: updatedTodoItem.id,
+        name: updatedTodoItem.name,
+        assigneeIds: updatedTodoItem.assignees.map(
+          (assignee) => assignee.userId,
+        ),
+      };
+
+      return res.status(201).json(response);
     }
   },
 );

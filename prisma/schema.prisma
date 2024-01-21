@@ -22,7 +22,8 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  company Company? @relation(fields: [companyId], references: [id])
+  company          Company?           @relation(fields: [companyId], references: [id])
+  TodoItemAssignee TodoItemAssignee[]
 
   @@map("users")
 }
@@ -66,7 +67,21 @@ model TodoItem {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  list TodoList @relation(fields: [listId], references: [id])
+  list      TodoList           @relation(fields: [listId], references: [id])
+  assignees TodoItemAssignee[]
 
   @@map("todo_items")
+}
+
+model TodoItemAssignee {
+  todoItem  String   @map("item_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  item TodoItem @relation(fields: [todoItem], references: [id])
+  user User     @relation(fields: [userId], references: [id])
+
+  @@unique([todoItem, userId])
+  @@map("todo_item_assignees")
 }

@@ -1,10 +1,12 @@
 export type TodoItemRequest = {
   name: string;
+  assigneeIds: string[];
 };
 
 export type TodoItemResponse = {
   id: string;
   name: string;
+  assigneeIds: string[];
 };
 
 export async function createTodoItem(

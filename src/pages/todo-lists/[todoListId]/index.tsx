@@ -36,6 +36,11 @@ export const getServerSideProps = withAuth(
           select: {
             id: true,
             name: true,
+            assignees: {
+              select: {
+                userId: true,
+              },
+            },
           },
         },
       },
@@ -45,12 +50,20 @@ export const getServerSideProps = withAuth(
       throw new Error('Todo list not found');
     }
 
+    const flatItems = todoList.items.map<TodoItem>((item) => {
+      return {
+        id: item.id,
+        name: item.name,
+        assigneeIds: item.assignees.map((a) => a.userId),
+      };
+    });
+
     return {
       list: {
         id: todoList.id,
         name: todoList.name,
       },
-      items: todoList.items,
+      items: flatItems,
     };
   },
 );
@@ -121,6 +134,7 @@ export default function Page(
 type TodoItem = {
   id: string;
   name: string;
+  assigneeIds: string[];
 };
 
 type ItemsListProps = {
@@ -205,7 +219,7 @@ function TodoItemModal(props: TodoItemModalProps) {
           todoListId={props.listId}
           todoItemId={editingItem?.id}
           onSave={(item) => props.onClose(item)}
-          initialState={editingItem || { name: '' }}
+          initialState={editingItem || { name: '', assigneeIds: [] }}
         />
       </div>
     </Modal>

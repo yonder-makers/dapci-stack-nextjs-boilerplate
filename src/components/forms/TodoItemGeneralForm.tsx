@@ -5,11 +5,11 @@ import {
 } from '@/lib/apis/todoItem.api';
 import { useNotifications } from '@/providers/notification.providers';
 import { Button, Form, Input } from 'antd';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 type FormFields = {
   name: string;
+  assigneeIds: string[];
 };
 
 export function TodoItemGeneralForm(props: {
