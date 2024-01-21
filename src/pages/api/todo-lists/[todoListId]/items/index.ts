@@ -47,6 +47,7 @@ export default withApiAuth<TodoItemRequest, TodoItemResponse>(
         data: {
           name: body.name,
           listId,
+          isDone: body.isDone,
           assignees: {
             createMany: {
               data: body.assigneeIds.map((userId) => ({
@@ -58,6 +59,7 @@ export default withApiAuth<TodoItemRequest, TodoItemResponse>(
         select: {
           id: true,
           name: true,
+          isDone: true,
           assignees: {
             select: {
               userId: true,
@@ -69,6 +71,7 @@ export default withApiAuth<TodoItemRequest, TodoItemResponse>(
       const response: TodoItemResponse = {
         id: newTodoItem.id,
         name: newTodoItem.name,
+        isDone: newTodoItem.isDone,
         assigneeIds: newTodoItem.assignees.map((assignee) => assignee.userId),
       };
 

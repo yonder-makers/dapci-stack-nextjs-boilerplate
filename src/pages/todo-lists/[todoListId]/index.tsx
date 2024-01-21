@@ -1,11 +1,12 @@
 import { TodoItemGeneralForm } from '@/components/forms/TodoItemGeneralForm';
+import { updateTodoItemIsDone } from '@/lib/apis/todoItem.api';
 import { withAuth } from '@/lib/hocs';
 import prisma from '@/lib/prisma';
 import {
-  Avatar,
   Breadcrumb,
   Button,
   Card,
+  Checkbox,
   Flex,
   Input,
   List,
@@ -37,11 +38,15 @@ export const getServerSideProps = withAuth(
           select: {
             id: true,
             name: true,
+            isDone: true,
             assignees: {
               select: {
                 userId: true,
               },
             },
+          },
+          orderBy: {
+            createdAt: 'asc',
           },
         },
       },
@@ -55,6 +60,7 @@ export const getServerSideProps = withAuth(
       return {
         id: item.id,
         name: item.name,
+        isDone: item.isDone,
         assigneeIds: item.assignees.map((a) => a.userId),
       };
     });
@@ -103,6 +109,15 @@ export default function Page(
     { title: todoList.name },
   ];
 
+  function updateItem(item: TodoItem) {
+    if (todoItems.find((i) => i.id === item.id)) {
+      setTodoItems(todoItems.map((i) => (i.id === item.id ? item : i)));
+      return;
+    } else {
+      setTodoItems([...todoItems, item]);
+    }
+  }
+
   return (
     <Space direction="vertical" size={16} className="w-full">
       <Breadcrumb items={breadCrumbItems} />
@@ -121,7 +136,8 @@ export default function Page(
         listId={todoList.id}
         items={filteredItems}
         companyUsers={props.companyUsers}
-        onEdit={(item) => setEditingItemId(item.id)}
+        onStartEditing={(item) => setEditingItemId(item.id)}
+        onItemUpdated={updateItem}
       />
       <TodoItemModal
         items={todoItems}
@@ -130,14 +146,8 @@ export default function Page(
         companyUsers={props.companyUsers}
         onClose={(item) => {
           setEditingItemId(undefined);
-
           if (item) {
-            if (todoItems.find((i) => i.id === item.id)) {
-              setTodoItems(todoItems.map((i) => (i.id === item.id ? item : i)));
-              return;
-            } else {
-              setTodoItems([...todoItems, item]);
-            }
+            updateItem(item);
           }
         }}
       />
@@ -148,6 +158,7 @@ export default function Page(
 type TodoItem = {
   id: string;
   name: string;
+  isDone: boolean;
   assigneeIds: string[];
 };
 
@@ -155,10 +166,20 @@ type ItemsListProps = {
   listId: string;
   items: TodoItem[];
   companyUsers: { id: string; name: string }[];
-  onEdit: (item: TodoItem) => void;
+  onStartEditing: (item: TodoItem) => void;
+  onItemUpdated: (item: TodoItem) => void;
 };
 
 function ItemsList(props: ItemsListProps) {
+  async function onCheckChange(item: TodoItem) {
+    const newItem = await updateTodoItemIsDone(
+      props.listId,
+      item.id,
+      !item.isDone,
+    );
+    props.onItemUpdated(newItem);
+  }
+
   return (
     <Card size="small">
       <List
@@ -167,16 +188,21 @@ function ItemsList(props: ItemsListProps) {
         renderItem={(item, index) => (
           <List.Item
             actions={[
-              <Button key="edit" onClick={() => props.onEdit(item)} type="link">
+              <Button
+                key="edit"
+                onClick={() => props.onStartEditing(item)}
+                type="link"
+              >
                 edit
               </Button>,
             ]}
           >
             <List.Item.Meta
               avatar={
-                <Avatar
-                  src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
-                />
+                <Checkbox
+                  checked={item.isDone}
+                  onChange={() => onCheckChange(item)}
+                ></Checkbox>
               }
               title={<a href="https://ant.design">{item.name}</a>}
               description={
@@ -264,7 +290,9 @@ function TodoItemModal(props: TodoItemModalProps) {
           todoItemId={editingItem?.id}
           onSave={(item) => props.onClose(item)}
           companyUsers={props.companyUsers}
-          initialState={editingItem || { name: '', assigneeIds: [] }}
+          initialState={
+            editingItem || { name: '', assigneeIds: [], isDone: false }
+          }
         />
       </div>
     </Modal>

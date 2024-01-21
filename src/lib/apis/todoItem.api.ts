@@ -1,11 +1,13 @@
 export type TodoItemRequest = {
   name: string;
+  isDone: boolean;
   assigneeIds: string[];
 };
 
 export type TodoItemResponse = {
   id: string;
   name: string;
+  isDone: boolean;
   assigneeIds: string[];
 };
 
@@ -39,6 +41,22 @@ export async function updateTodoItem(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
+  });
+
+  const response = await request.json();
+
+  return response as TodoItemResponse;
+}
+
+export async function updateTodoItemIsDone(
+  todoListId: string,
+  itemId: string,
+  isDone: boolean,
+) {
+  const url = `/api/todo-lists/${todoListId}/items/${itemId}/is-done`;
+
+  const request = await fetch(url, {
+    method: isDone ? 'POST' : 'DELETE',
   });
 
   const response = await request.json();

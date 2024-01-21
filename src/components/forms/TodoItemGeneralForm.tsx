@@ -4,11 +4,12 @@ import {
   updateTodoItem,
 } from '@/lib/apis/todoItem.api';
 import { useNotifications } from '@/providers/notification.providers';
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Checkbox, Form, Input, Select } from 'antd';
 import { useMemo, useState } from 'react';
 
 type FormFields = {
   name: string;
+  isDone: boolean;
   assigneeIds: string[];
 };
 
@@ -75,6 +76,14 @@ export function TodoItemGeneralForm(props: {
         rules={[{ required: true, message: 'Please insert name' }]}
       >
         <Input />
+      </Form.Item>
+
+      <Form.Item<FormFields>
+        label="Is done"
+        name="isDone"
+        valuePropName="checked"
+      >
+        <Checkbox />
       </Form.Item>
 
       <Form.Item<FormFields> label="Assignees" name="assigneeIds">

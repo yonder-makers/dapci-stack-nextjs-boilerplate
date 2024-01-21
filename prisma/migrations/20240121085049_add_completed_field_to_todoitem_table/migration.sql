@@ -1,0 +1,2 @@
+ALTER TABLE "todo_items"
+ADD COLUMN "is_done" BOOLEAN NOT NULL DEFAULT false;

@@ -63,6 +63,7 @@ model TodoList {
 model TodoItem {
   id        String   @id @default(uuid())
   name      String
+  isDone    Boolean  @default(false) @map("is_done")
   listId    String   @map("list_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

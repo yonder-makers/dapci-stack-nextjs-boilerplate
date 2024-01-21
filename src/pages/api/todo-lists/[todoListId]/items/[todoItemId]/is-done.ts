@@ -2,27 +2,12 @@ import { TodoItemRequest, TodoItemResponse } from '@/lib/apis/todoItem.api';
 import { withApiAuth } from '@/lib/hocs';
 import prisma from '@/lib/prisma';
 
-function trimAndValidateBody(body: TodoItemRequest) {
-  body.name = body.name?.trim() || '';
-
-  if (body.name.length === 0) {
-    return 'Name is required';
-  }
-
-  return undefined;
-}
-
-export default withApiAuth<TodoItemRequest, TodoItemResponse>(
+export default withApiAuth<{}, TodoItemResponse>(
   'ADMIN',
   async (session, body, req, res) => {
     {
-      if (req.method !== 'POST') {
+      if (req.method !== 'POST' && req.method !== 'DELETE') {
         return res.status(405).json({ errorMessage: 'Method not allowed' });
-      }
-
-      const validationError = trimAndValidateBody(body);
-      if (validationError) {
-        return res.status(400).json({ errorMessage: validationError });
       }
 
       const companyId = session.companyId!;
@@ -51,16 +36,7 @@ export default withApiAuth<TodoItemRequest, TodoItemResponse>(
           id: todoItemId,
         },
         data: {
-          name: body.name,
-          isDone: body.isDone,
-          assignees: {
-            deleteMany: {},
-            createMany: {
-              data: body.assigneeIds.map((userId) => ({
-                userId,
-              })),
-            },
-          },
+          isDone: req.method === 'POST' ? true : false,
         },
         select: {
           id: true,
