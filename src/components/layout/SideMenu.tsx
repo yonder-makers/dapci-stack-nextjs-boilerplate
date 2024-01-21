@@ -1,5 +1,12 @@
 import { UserSession } from '@/lib/types';
-import { UploadOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  UploadOutlined,
+  UserOutlined,
+  HomeOutlined,
+  UserSwitchOutlined,
+  OrderedListOutlined,
+  BankOutlined,
+} from '@ant-design/icons';
 import { Menu } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -72,10 +79,14 @@ function AdminMenu({ user }: { user: UserSession }) {
       mode="inline"
       selectedKeys={[selectedKey]}
       items={[
-        item('Home', '/', <UserOutlined />),
+        item('Home', '/', <HomeOutlined />),
         item('My profile', '/profile', <UserOutlined />),
-        item('Users', `/companies/${user.companyId}/users`, <UserOutlined />),
-        item('Todo lists', '/todo-lists', <UserOutlined />),
+        item(
+          'Users',
+          `/companies/${user.companyId}/users`,
+          <UserSwitchOutlined />,
+        ),
+        item('Todo lists', '/todo-lists', <OrderedListOutlined />),
       ]}
     />
   );
@@ -89,7 +100,7 @@ function SuperAdminMenu() {
       defaultSelectedKeys={['My profile']}
       items={[
         item('My profile', '/profile', <UserOutlined />),
-        item('Companies', '/companies', <UserOutlined />),
+        item('Companies', '/companies', <BankOutlined />),
       ]}
     />
   );

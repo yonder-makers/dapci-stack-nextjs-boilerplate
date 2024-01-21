@@ -8,6 +8,8 @@ import { SideMenu } from './SideMenu';
 
 const { Sider, Content } = Layout;
 
+const SHOW_SIDEMENU_IF_ANONYMOUS = false;
+
 type AppLayoutProps = {
   children: React.ReactNode;
   userSession?: UserSession;
@@ -19,29 +21,35 @@ export function AppLayout(props: AppLayoutProps) {
     token: { colorBgContainer },
   } = theme.useToken();
 
+  const showSideMenu = SHOW_SIDEMENU_IF_ANONYMOUS || props.userSession;
+
   return (
     <NotificationsProvider>
       <Layout className="min-h-screen">
-        <Sider trigger={null} collapsible collapsed={collapsed}>
-          <div className="app-logo" />
-          <SideMenu user={props.userSession} />
-        </Sider>
+        {showSideMenu ? (
+          <Sider trigger={null} collapsible collapsed={collapsed}>
+            <div className="app-logo" />
+            <SideMenu user={props.userSession} />
+          </Sider>
+        ) : null}
         <Layout>
           <Layout.Header style={{ padding: 0, background: colorBgContainer }}>
             <Row justify="space-between">
               <Col span={2}>
-                <Button
-                  type="text"
-                  icon={
-                    collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />
-                  }
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{
-                    fontSize: '16px',
-                    width: 64,
-                    height: 64,
-                  }}
-                />
+                {showSideMenu ? (
+                  <Button
+                    type="text"
+                    icon={
+                      collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />
+                    }
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{
+                      fontSize: '16px',
+                      width: 64,
+                      height: 64,
+                    }}
+                  />
+                ) : null}
               </Col>
               <Col span={14} className="pe-4 text-right">
                 <HeaderWelcomeMessage user={props.userSession} />
