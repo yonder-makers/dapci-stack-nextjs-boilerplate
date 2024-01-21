@@ -11,13 +11,10 @@ import {
   List,
   Modal,
   Space,
-  Table,
   Typography,
 } from 'antd';
-import { ColumnsType } from 'antd/es/table';
 import { InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
-import { todo } from 'node:test';
 import { useMemo, useState } from 'react';
 
 type PageParams = { todoListId: string };
@@ -84,7 +81,7 @@ export default function Page(
   return (
     <Space direction="vertical" size={16} className="w-full">
       <Breadcrumb items={breadCrumbItems} />
-      <Typography.Title level={2}>Manage users</Typography.Title>
+      <Typography.Title level={2}>Todo items</Typography.Title>
 
       <Flex justify="space-between" align="center" gap="large">
         <Input.Search
