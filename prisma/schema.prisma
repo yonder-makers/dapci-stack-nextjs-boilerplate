@@ -52,8 +52,8 @@ model TodoList {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  companyId String   @map("company_id")
-  company   Company? @relation(fields: [companyId], references: [id])
+  companyId String  @map("company_id")
+  company   Company @relation(fields: [companyId], references: [id])
 
   items TodoItem[]
 
