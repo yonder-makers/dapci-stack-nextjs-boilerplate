@@ -11,6 +11,7 @@ import {
   List,
   Modal,
   Space,
+  Tag,
   Typography,
 } from 'antd';
 import { InferGetServerSidePropsType } from 'next';
@@ -58,12 +59,23 @@ export const getServerSideProps = withAuth(
       };
     });
 
+    const companyUsers = await prisma.user.findMany({
+      where: {
+        companyId,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
     return {
       list: {
         id: todoList.id,
         name: todoList.name,
       },
       items: flatItems,
+      companyUsers,
     };
   },
 );
@@ -108,12 +120,14 @@ export default function Page(
       <ItemsList
         listId={todoList.id}
         items={filteredItems}
+        companyUsers={props.companyUsers}
         onEdit={(item) => setEditingItemId(item.id)}
       />
       <TodoItemModal
         items={todoItems}
         listId={todoList.id}
         openId={editingItemId}
+        companyUsers={props.companyUsers}
         onClose={(item) => {
           setEditingItemId(undefined);
 
@@ -140,6 +154,7 @@ type TodoItem = {
 type ItemsListProps = {
   listId: string;
   items: TodoItem[];
+  companyUsers: { id: string; name: string }[];
   onEdit: (item: TodoItem) => void;
 };
 
@@ -164,7 +179,12 @@ function ItemsList(props: ItemsListProps) {
                 />
               }
               title={<a href="https://ant.design">{item.name}</a>}
-              description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+              description={
+                <AssigneeList
+                  companyUsers={props.companyUsers}
+                  assigneeIds={item.assigneeIds}
+                />
+              }
             />
           </List.Item>
         )}
@@ -173,10 +193,34 @@ function ItemsList(props: ItemsListProps) {
   );
 }
 
+type AssigneeListProps = {
+  assigneeIds: string[];
+  companyUsers: { id: string; name: string }[];
+};
+function AssigneeList(props: AssigneeListProps) {
+  const assigneeIds = props.assigneeIds;
+  if (assigneeIds.length === 0) {
+    return <span>No assignees</span>;
+  }
+
+  return (
+    <Flex wrap="wrap">
+      {assigneeIds.map((id) => {
+        return (
+          <Tag key={id}>
+            {props.companyUsers.find((u) => u.id === id)?.name}
+          </Tag>
+        );
+      })}
+    </Flex>
+  );
+}
+
 type TodoItemModalProps = {
   listId: string;
   openId: 'new-item' | string | undefined;
   items: TodoItem[];
+  companyUsers: { id: string; name: string }[];
   onClose: (item?: TodoItem) => void;
 };
 
@@ -219,6 +263,7 @@ function TodoItemModal(props: TodoItemModalProps) {
           todoListId={props.listId}
           todoItemId={editingItem?.id}
           onSave={(item) => props.onClose(item)}
+          companyUsers={props.companyUsers}
           initialState={editingItem || { name: '', assigneeIds: [] }}
         />
       </div>

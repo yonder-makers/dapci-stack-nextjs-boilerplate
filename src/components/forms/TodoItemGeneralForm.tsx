@@ -4,8 +4,8 @@ import {
   updateTodoItem,
 } from '@/lib/apis/todoItem.api';
 import { useNotifications } from '@/providers/notification.providers';
-import { Button, Form, Input } from 'antd';
-import { useState } from 'react';
+import { Button, Form, Input, Select } from 'antd';
+import { useMemo, useState } from 'react';
 
 type FormFields = {
   name: string;
@@ -16,10 +16,20 @@ export function TodoItemGeneralForm(props: {
   todoListId: string;
   todoItemId?: string;
   initialState: FormFields;
+  companyUsers: { id: string; name: string }[];
   onSave: (item: TodoItemResponse) => void;
 }) {
   const [form] = Form.useForm();
   const notifications = useNotifications();
+
+  const userOptions = useMemo(() => {
+    return props.companyUsers.map((user) => {
+      return {
+        label: user.name,
+        value: user.id,
+      };
+    });
+  }, [props.companyUsers]);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,6 +75,15 @@ export function TodoItemGeneralForm(props: {
         rules={[{ required: true, message: 'Please insert name' }]}
       >
         <Input />
+      </Form.Item>
+
+      <Form.Item<FormFields> label="Assignees" name="assigneeIds">
+        <Select
+          mode="multiple"
+          allowClear
+          placeholder="Please select"
+          options={userOptions}
+        />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
