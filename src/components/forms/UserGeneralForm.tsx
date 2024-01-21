@@ -39,13 +39,10 @@ export function UserGeneralForm(props: UserGeneralFormProps) {
         notifications.success('User updated');
       }
     } catch (error) {
+      notifications.error("Couldn't save user");
     } finally {
       setIsLoading(false);
     }
-  }
-
-  function onFinishFailed() {
-    console.log('finish failed');
   }
 
   return (
@@ -57,7 +54,6 @@ export function UserGeneralForm(props: UserGeneralFormProps) {
       style={{ maxWidth: 600 }}
       initialValues={props.initialState}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
       <Form.Item<FormFields>

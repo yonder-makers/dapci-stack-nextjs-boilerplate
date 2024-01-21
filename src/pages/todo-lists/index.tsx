@@ -74,8 +74,8 @@ export default function Page(
   async function deleteItem(item: TodoList) {
     try {
       const response = await deleteTodoList(item.id);
-
       setLists(lists.filter((list) => list.id !== response.id));
+      notifications.success(`Todo list "${item.name}" has been deleted.`);
     } catch (error) {
       notifications.error("Couldn't delete todo list");
     }

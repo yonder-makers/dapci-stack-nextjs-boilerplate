@@ -33,6 +33,8 @@ export function TodoListGeneralForm(props: {
         form.setFieldsValue(todoList);
         notifications.success('Todo list updated');
       }
+    } catch (error) {
+      notifications.error("Couldn't save todo list");
     } finally {
       setIsLoading(false);
     }
