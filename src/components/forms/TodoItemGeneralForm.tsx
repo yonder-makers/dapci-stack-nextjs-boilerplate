@@ -1,8 +1,11 @@
+'use client';
+
 import {
   TodoItemResponse,
   createTodoItem,
   updateTodoItem,
-} from '@/lib/apis/todoItem.api';
+} from '@/actions/todo-item.actions';
+
 import { useNotifications } from '@/providers/notification.providers';
 import { Button, Checkbox, Form, Input, Select } from 'antd';
 import { useMemo, useState } from 'react';
@@ -44,11 +47,7 @@ export function TodoItemGeneralForm(props: {
 
         props.onSave(todoItem);
       } else {
-        const todoItem = await updateTodoItem(
-          props.todoListId,
-          props.todoItemId,
-          values,
-        );
+        const todoItem = await updateTodoItem(props.todoItemId, values);
         form.setFieldsValue(todoItem);
         notifications.success('Todo item updated');
         props.onSave(todoItem);

@@ -1,7 +1,6 @@
-import { deleteTodoList } from '@/lib/apis/todoList.api';
-import { withAuth } from '@/lib/hocs';
-import prisma from '@/lib/prisma';
-import { formatRelativeDate } from '@/lib/utils';
+'use client';
+
+import { deleteTodoList } from '@/actions/todo-list.actions';
 import { useNotifications } from '@/providers/notification.providers';
 import {
   Breadcrumb,
@@ -15,46 +14,21 @@ import {
   Typography,
 } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
-export const getServerSideProps = withAuth('ADMIN', async function (session) {
-  const companyId = session!.companyId;
+type TodoList = {
+  id: string;
+  name: string;
+  createdAt: string;
+  numberOfItems: number;
+};
 
-  const lists = await prisma.todoList.findMany({
-    where: {
-      companyId,
-    },
-    select: {
-      id: true,
-      name: true,
-      createdAt: true,
-      _count: {
-        select: {
-          items: true,
-        },
-      },
-    },
-  });
+type TodoListProps = {
+  lists: TodoList[];
+};
 
-  const flatLists = lists.map((l) => {
-    return {
-      id: l.id,
-      name: l.name,
-      createdAt: formatRelativeDate(l.createdAt),
-      numberOfItems: l._count.items,
-    };
-  });
-
-  return {
-    lists: flatLists,
-  };
-});
-
-export default function Page(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
+export function TodoLists(props: TodoListProps) {
   const notifications = useNotifications();
 
   const [lists, setLists] = useState(props.lists);
@@ -99,13 +73,6 @@ export default function Page(
     </Space>
   );
 }
-
-type TodoList = {
-  id: string;
-  name: string;
-  createdAt: string;
-  numberOfItems: number;
-};
 
 function getColumns(onDeleteItem: (item: TodoList) => void) {
   const columns: ColumnsType<TodoList> = [

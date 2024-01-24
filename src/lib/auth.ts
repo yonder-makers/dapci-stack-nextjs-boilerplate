@@ -3,7 +3,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { compare } from 'bcryptjs';
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { UserSession } from './types';
+import { UserRoles, UserSession } from './types';
 
 export const authOptions: NextAuthOptions = {
   // This is a temporary fix for prisma client.
@@ -100,3 +100,66 @@ export async function getUserSession(context?: any) {
 export function hasAdminPermissions(session?: UserSession) {
   return session?.role === 'ADMIN';
 }
+
+export async function ensureCompanyRole() {
+  const user = await getUserSession();
+  if (!user) {
+    throw new Error('Access denied. You must be logged in.');
+  }
+
+  switch (user.role) {
+    case 'SUPERADMIN':
+      throw new Error('Access denied. You must be a member of a company.');
+    case 'ADMIN':
+    case 'USER':
+      return user;
+    default:
+      throw new Error('Access denied');
+  }
+}
+
+export async function ensureSuperAdminRole() {
+  const user = await getUserSession();
+  if (!user) {
+    throw new Error('Access denied. You must be logged in.');
+  }
+
+  switch (user.role) {
+    case 'SUPERADMIN':
+      return user;
+    case 'ADMIN':
+    case 'USER':
+      throw new Error(
+        'Access denied. You must be a super admin user to do this action.',
+      );
+    default:
+      throw new Error('Access denied');
+  }
+}
+
+// export async function ensurePermissionForCompany(
+//   role: UserRoles,
+//   companyId: string,
+// ) {
+//   const user = await ensurePermission(role);
+
+//   switch (role) {
+//     case 'USER':
+//       if (user.companyId !== companyId) {
+//         throw new Error('Access denied');
+//       }
+//       break;
+//     case 'ADMIN':
+//       if (user.companyId !== companyId) {
+//         throw new Error('Access denied');
+//       }
+//       break;
+//     case 'SUPERADMIN':
+//       // super admin has access to all companies
+//       break;
+//     default:
+//       throw new Error('Access denied');
+//   }
+
+//   return user;
+// }

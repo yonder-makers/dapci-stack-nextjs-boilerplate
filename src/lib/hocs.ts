@@ -64,7 +64,8 @@ function hasAccess(
   companyId?: string,
 ) {
   const userRole = userSession?.role || 'ANONYMOUS';
-  const userCompanyId = userSession?.companyId || undefined;
+  const userCompanyId =
+    userSession?.role === 'SUPERADMIN' ? undefined : userSession?.companyId;
 
   if (userRole === 'SUPERADMIN') return true;
 

@@ -1,7 +1,8 @@
-import { TodoItemGeneralForm } from '@/components/forms/TodoItemGeneralForm';
-import { deleteTodoItem, updateTodoItemIsDone } from '@/lib/apis/todoItem.api';
-import { withAuth } from '@/lib/hocs';
-import prisma from '@/lib/prisma';
+'use client';
+import {
+  deleteTodoItem,
+  updateTodoItemIsDone,
+} from '@/actions/todo-item.actions';
 import {
   Breadcrumb,
   Button,
@@ -10,87 +11,29 @@ import {
   Flex,
   Input,
   List,
-  Modal,
   Popconfirm,
   Space,
   Tag,
   Typography,
 } from 'antd';
-import { InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import { TodoItemModal } from './TodoItemModal.client';
 
-type PageParams = { todoListId: string };
+export type TodoItem = {
+  id: string;
+  name: string;
+  isDone: boolean;
+  assigneeIds: string[];
+};
 
-export const getServerSideProps = withAuth(
-  'ADMIN',
-  async function (session, params: PageParams) {
-    const companyId = session?.companyId!;
-
-    const todoList = await prisma.todoList.findFirst({
-      where: {
-        id: params.todoListId,
-        companyId,
-      },
-      select: {
-        id: true,
-        name: true,
-        items: {
-          select: {
-            id: true,
-            name: true,
-            isDone: true,
-            assignees: {
-              select: {
-                userId: true,
-              },
-            },
-          },
-          orderBy: {
-            createdAt: 'asc',
-          },
-        },
-      },
-    });
-
-    if (!todoList) {
-      throw new Error('Todo list not found');
-    }
-
-    const flatItems = todoList.items.map<TodoItem>((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-        isDone: item.isDone,
-        assigneeIds: item.assignees.map((a) => a.userId),
-      };
-    });
-
-    const companyUsers = await prisma.user.findMany({
-      where: {
-        companyId,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-
-    return {
-      list: {
-        id: todoList.id,
-        name: todoList.name,
-      },
-      items: flatItems,
-      companyUsers,
-    };
-  },
-);
-
-export default function Page(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
-  const todoList = props.list;
+type TodoItemsProps = {
+  todoList: { id: string; name: string };
+  items: TodoItem[];
+  companyUsers: { id: string; name: string }[];
+};
+export function TodoItems(props: TodoItemsProps) {
+  const todoList = props.todoList;
   const [todoItems, setTodoItems] = useState(props.items);
 
   const [searchText, setSearchText] = useState('');
@@ -161,13 +104,6 @@ export default function Page(
   );
 }
 
-type TodoItem = {
-  id: string;
-  name: string;
-  isDone: boolean;
-  assigneeIds: string[];
-};
-
 type ItemsListProps = {
   listId: string;
   items: TodoItem[];
@@ -179,16 +115,12 @@ type ItemsListProps = {
 
 function ItemsList(props: ItemsListProps) {
   async function onCheckChange(item: TodoItem) {
-    const newItem = await updateTodoItemIsDone(
-      props.listId,
-      item.id,
-      !item.isDone,
-    );
+    const newItem = await updateTodoItemIsDone(item.id, !item.isDone);
     props.onItemUpdated(newItem);
   }
 
   async function onDeleteItem(item: TodoItem) {
-    const newItem = await deleteTodoItem(props.listId, item.id);
+    const newItem = await deleteTodoItem(item.id);
     props.onItemDeleted(newItem.id);
   }
 
@@ -263,62 +195,5 @@ function AssigneeList(props: AssigneeListProps) {
         );
       })}
     </Flex>
-  );
-}
-
-type TodoItemModalProps = {
-  listId: string;
-  openId: 'new-item' | string | undefined;
-  items: TodoItem[];
-  companyUsers: { id: string; name: string }[];
-  onClose: (item?: TodoItem) => void;
-};
-
-function TodoItemModal(props: TodoItemModalProps) {
-  const isOpen = props.openId !== undefined;
-  const isEdit = props.openId !== 'new-item';
-  const editingItem = useMemo(() => {
-    if (props.openId === undefined) {
-      return undefined;
-    }
-
-    if (props.openId === 'new-item') {
-      return undefined;
-    }
-
-    return props.items.find((item) => item.id === props.openId);
-  }, [props.openId, props.items]);
-
-  function close() {
-    props.onClose();
-  }
-
-  return (
-    <Modal
-      open={isOpen}
-      onCancel={close}
-      onOk={close}
-      destroyOnClose={true}
-      footer={[
-        <Button key="back" onClick={close}>
-          Close
-        </Button>,
-      ]}
-    >
-      <div>
-        <Typography.Title level={2}>
-          {isEdit ? 'Edit' : 'Create'} todo item
-        </Typography.Title>
-        <TodoItemGeneralForm
-          todoListId={props.listId}
-          todoItemId={editingItem?.id}
-          onSave={(item) => props.onClose(item)}
-          companyUsers={props.companyUsers}
-          initialState={
-            editingItem || { name: '', assigneeIds: [], isDone: false }
-          }
-        />
-      </div>
-    </Modal>
   );
 }

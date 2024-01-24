@@ -1,16 +1,9 @@
+'use client';
 import { TodoListGeneralForm } from '@/components/forms/TodoListGeneralForm';
-import { withAuth } from '@/lib/hocs';
 import { Breadcrumb, Card, Space, Typography } from 'antd';
-import { InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 
-export const getServerSideProps = withAuth('ADMIN', async function () {
-  return {};
-});
-
-export default function Page(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
+export function CreateTodoList() {
   const breadCrumbItems = [
     { title: <Link href="/">Home</Link> },
     { title: <Link href="/todo-lists">Todo lists</Link> },

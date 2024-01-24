@@ -1,4 +1,5 @@
-import { UserSession } from '@/lib/types';
+'use client';
+import { CompanyUser, UserSession } from '@/lib/types';
 import {
   UploadOutlined,
   UserOutlined,
@@ -9,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import { Menu } from 'antd';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname } from 'next/navigation';
 import React from 'react';
 
 type SideMenuProps = {
@@ -60,16 +61,17 @@ function NormalUserMenu() {
   );
 }
 
-function AdminMenu({ user }: { user: UserSession }) {
-  const router = useRouter();
+function AdminMenu({ user }: { user: CompanyUser }) {
+  const pathname = usePathname();
+  console.log('pathname', pathname);
   let selectedKey = 'Home';
-  if (router.pathname.includes('/profile')) {
+  if (pathname?.includes('/profile')) {
     selectedKey = 'My profile';
   }
-  if (router.pathname.includes('/companies/[companyId]/users')) {
+  if (pathname?.includes('/companies/[companyId]/users')) {
     selectedKey = 'Users';
   }
-  if (router.pathname.includes('/todo-lists')) {
+  if (pathname?.includes('/todo-lists')) {
     selectedKey = 'Todo lists';
   }
 

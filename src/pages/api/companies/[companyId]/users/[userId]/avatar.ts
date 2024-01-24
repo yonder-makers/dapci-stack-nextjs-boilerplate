@@ -3,6 +3,7 @@ import { promises as fsPromises } from 'fs';
 
 import { withApiAuth } from '@/lib/hocs';
 import { NextApiRequest } from 'next';
+import { CompanyUser } from '@/lib/types';
 
 export const config = {
   api: {
@@ -36,7 +37,7 @@ export default withApiAuth<undefined, any>(
     const companyId = req.query.companyId as string;
     const userId = req.query.userId as string;
 
-    if (user.id !== userId || user.companyId !== companyId) {
+    if (user.id !== userId || (user as CompanyUser).companyId !== companyId) {
       res.status(403).json({ message: 'Forbidden' });
       return;
     }

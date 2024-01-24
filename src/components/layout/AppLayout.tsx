@@ -1,3 +1,4 @@
+'use client';
 import { UserSession } from '@/lib/types';
 import { NotificationsProvider } from '@/providers/notification.providers';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
@@ -8,7 +9,7 @@ import { SideMenu } from './SideMenu';
 
 const { Sider, Content } = Layout;
 
-const SHOW_SIDEMENU_IF_ANONYMOUS = false;
+const SHOW_SIDEMENU_IF_ANONYMOUS = true;
 
 type AppLayoutProps = {
   children: React.ReactNode;
