@@ -16,3 +16,11 @@ export type SuperUser = {
   email: string;
   role: 'SUPERADMIN';
 };
+
+export class NotAuthenticatedError extends Error {
+  constructor() {
+    super('Access denied. You must be logged in.', {
+      cause: 'NOT_AUTHENTICATED',
+    });
+  }
+}

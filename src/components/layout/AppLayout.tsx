@@ -9,7 +9,7 @@ import { SideMenu } from './SideMenu';
 
 const { Sider, Content } = Layout;
 
-const SHOW_SIDEMENU_IF_ANONYMOUS = true;
+const SHOW_SIDEMENU_IF_ANONYMOUS = false;
 
 type AppLayoutProps = {
   children: React.ReactNode;

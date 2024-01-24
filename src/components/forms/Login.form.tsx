@@ -1,88 +1,90 @@
+'use client';
+import { useNotifications } from '@/providers/notification.providers';
+import { Button, Checkbox, Form, Input } from 'antd';
 import { signIn } from 'next-auth/react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 
+type FieldType = {
+  username?: string;
+  password?: string;
+  remember?: string;
+};
+
 export const LoginForm = () => {
+  const [form] = Form.useForm();
+
   const router = useRouter();
+  const notifications = useNotifications();
+
   const [loading, setLoading] = useState(false);
-  const [formValues, setFormValues] = useState({
-    email: '',
-    password: '',
-  });
-  const [error, setError] = useState('');
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl') || '/my-profile';
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  async function onSubmit(values: FieldType) {
     try {
       setLoading(true);
-      setFormValues({ email: '', password: '' });
 
       const res = await signIn('credentials', {
         redirect: false,
-        email: formValues.email,
-        password: formValues.password,
+        email: values.username,
+        password: values.password,
         callbackUrl,
       });
 
       setLoading(false);
 
       if (!res?.error) {
-        router.push(callbackUrl);
+        router.refresh();
       } else {
-        setError('invalid email or password');
+        notifications.error(
+          'Wrong credentials. Check your username or password.',
+        );
       }
     } catch (error: any) {
+      notifications.error('Something went wrong');
+    } finally {
       setLoading(false);
-      setError(error);
+      form.setFieldValue('password', '');
     }
-  };
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
-
-  const input_style =
-    'form-control block w-full px-4 py-5 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none';
+  }
 
   return (
-    <form onSubmit={onSubmit}>
-      {error && (
-        <p className="mb-6 rounded bg-red-300 py-4 text-center">{error}</p>
-      )}
-      <div className="mb-6">
-        <input
-          required
-          type="email"
-          name="email"
-          value={formValues.email}
-          onChange={handleChange}
-          placeholder="Email address"
-          className={`${input_style}`}
-        />
-      </div>
-      <div className="mb-6">
-        <input
-          required
-          type="password"
-          name="password"
-          value={formValues.password}
-          onChange={handleChange}
-          placeholder="Password"
-          className={`${input_style}`}
-        />
-      </div>
-      <button
-        type="submit"
-        style={{ backgroundColor: `${loading ? '#ccc' : '#3446eb'}` }}
-        className="inline-block w-full rounded bg-blue-600 px-7 py-4 text-sm font-medium uppercase leading-snug text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg"
-        disabled={loading}
+    <Form
+      name="login-form"
+      form={form}
+      layout="vertical"
+      style={{ maxWidth: 400, width: '90%' }}
+      initialValues={{ remember: true }}
+      onFinish={onSubmit}
+      autoComplete="off"
+    >
+      <Form.Item<FieldType>
+        label="Username"
+        name="username"
+        rules={[{ required: true, message: 'Please input your username!' }]}
       >
-        {loading ? 'loading...' : 'Sign In'}
-      </button>
-    </form>
+        <Input />
+      </Form.Item>
+
+      <Form.Item<FieldType>
+        label="Password"
+        name="password"
+        rules={[{ required: true, message: 'Please input your password!' }]}
+      >
+        <Input.Password />
+      </Form.Item>
+
+      <Form.Item<FieldType> name="remember" valuePropName="checked">
+        <Checkbox>Remember me</Checkbox>
+      </Form.Item>
+
+      <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
+        <Button type="primary" htmlType="submit" loading={loading}>
+          Login
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };

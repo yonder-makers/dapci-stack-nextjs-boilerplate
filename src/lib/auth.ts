@@ -3,7 +3,7 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { compare } from 'bcryptjs';
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { UserRoles, UserSession } from './types';
+import { NotAuthenticatedError, UserRoles, UserSession } from './types';
 
 export const authOptions: NextAuthOptions = {
   // This is a temporary fix for prisma client.
@@ -104,7 +104,7 @@ export function hasAdminPermissions(session?: UserSession) {
 export async function ensureAuthenticated() {
   const user = await getUserSession();
   if (!user) {
-    throw new Error('Access denied. You must be logged in.');
+    throw new NotAuthenticatedError();
   }
 
   return user;
@@ -113,7 +113,7 @@ export async function ensureAuthenticated() {
 export async function ensureCompanyRole() {
   const user = await getUserSession();
   if (!user) {
-    throw new Error('Access denied. You must be logged in.');
+    throw new NotAuthenticatedError();
   }
 
   switch (user.role) {
@@ -130,7 +130,7 @@ export async function ensureCompanyRole() {
 export async function ensureSuperAdminRole() {
   const user = await getUserSession();
   if (!user) {
-    throw new Error('Access denied. You must be logged in.');
+    throw new NotAuthenticatedError();
   }
 
   switch (user.role) {
@@ -149,7 +149,7 @@ export async function ensureSuperAdminRole() {
 export async function ensurePermissionForCompany(companyId: string) {
   const user = await getUserSession();
   if (!user) {
-    throw new Error('Access denied. You must be logged in.');
+    throw new NotAuthenticatedError();
   }
 
   switch (user.role) {
