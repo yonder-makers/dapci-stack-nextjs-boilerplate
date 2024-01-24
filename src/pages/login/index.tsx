@@ -6,7 +6,7 @@ export const getServerSideProps = withAuth(
   async function (session) {
     if (session) {
       return {
-        redirect: '/profile',
+        redirect: '/my-profile',
       };
     }
 

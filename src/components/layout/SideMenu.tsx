@@ -56,16 +56,15 @@ function NormalUserMenu() {
       theme="dark"
       mode="inline"
       defaultSelectedKeys={['My profile']}
-      items={[item('My profile', '/profile', <UserOutlined />)]}
+      items={[item('My profile', '/my-profile', <UserOutlined />)]}
     />
   );
 }
 
 function AdminMenu({ user }: { user: CompanyUser }) {
   const pathname = usePathname();
-  console.log('pathname', pathname);
   let selectedKey = 'Home';
-  if (pathname?.includes('/profile')) {
+  if (pathname?.includes('/my-profile')) {
     selectedKey = 'My profile';
   }
   if (pathname?.includes('/companies/[companyId]/users')) {
@@ -82,7 +81,7 @@ function AdminMenu({ user }: { user: CompanyUser }) {
       selectedKeys={[selectedKey]}
       items={[
         item('Home', '/', <HomeOutlined />),
-        item('My profile', '/profile', <UserOutlined />),
+        item('My profile', '/my-profile', <UserOutlined />),
         item(
           'Users',
           `/companies/${user.companyId}/users`,
@@ -95,13 +94,23 @@ function AdminMenu({ user }: { user: CompanyUser }) {
 }
 
 function SuperAdminMenu() {
+  const pathname = usePathname();
+  let selectedKey = 'Home';
+  if (pathname?.includes('/my-profile')) {
+    selectedKey = 'My profile';
+  }
+  if (pathname?.includes('/companies')) {
+    selectedKey = 'Companies';
+  }
+
   return (
     <Menu
       theme="dark"
       mode="inline"
-      defaultSelectedKeys={['My profile']}
+      defaultSelectedKeys={[selectedKey]}
       items={[
-        item('My profile', '/profile', <UserOutlined />),
+        item('Home', '/', <HomeOutlined />),
+        item('My profile', '/my-profile', <UserOutlined />),
         item('Companies', '/companies', <BankOutlined />),
       ]}
     />

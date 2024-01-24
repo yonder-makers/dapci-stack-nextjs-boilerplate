@@ -1,28 +1,35 @@
-import { createUser, updateUser } from '@/lib/apis/user.api';
+'use client';
+import { createUser, updateUser } from '@/actions/user.actions';
 import { useNotifications } from '@/providers/notification.providers';
 import { Button, Form, Input } from 'antd';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export type FormFields = {
-  id?: string;
   name: string;
   email: string;
   password?: string;
 };
 
+type PropsModes =
+  | {
+      companyId: string;
+      mode: 'create';
+    }
+  | {
+      userId: string;
+      mode: 'edit';
+    };
+
 type UserGeneralFormProps = {
-  companyId: string;
   initialState: FormFields;
-};
+} & PropsModes;
+
 export function UserGeneralForm(props: UserGeneralFormProps) {
-  const { companyId } = props;
   const notifications = useNotifications();
 
   const [isLoading, setIsLoading] = useState(false);
   const [formState, setFormState] = useState(props.initialState);
-
-  const isEdit = !!formState.id;
 
   const router = useRouter();
 
@@ -30,15 +37,26 @@ export function UserGeneralForm(props: UserGeneralFormProps) {
     setIsLoading(true);
 
     try {
-      if (!isEdit) {
-        const user = await createUser(companyId, formState);
+      if (props.mode === 'create') {
+        const body = {
+          ...formState,
+          password: formState.password!,
+        };
+
+        const user = await createUser(props.companyId, body);
         notifications.success('User created');
-        router.push(`/companies/${companyId}/users/${user.id}/edit`);
+        router.push(`/companies/${props.companyId}/users/${user.id}/edit`);
       } else {
-        await updateUser(companyId, props.initialState.id!, formState);
+        const body = {
+          ...formState,
+          password: formState.password!,
+        };
+
+        await updateUser(props.userId, body);
         notifications.success('User updated');
       }
     } catch (error) {
+      console.error(error);
       notifications.error("Couldn't save user");
     } finally {
       setIsLoading(false);
@@ -78,7 +96,7 @@ export function UserGeneralForm(props: UserGeneralFormProps) {
           }
         />
       </Form.Item>
-      {isEdit ? null : (
+      {props.mode === 'edit' ? null : (
         <Form.Item<FormFields>
           label="Password"
           name="password"

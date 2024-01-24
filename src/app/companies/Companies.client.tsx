@@ -1,6 +1,5 @@
-import { withAuth } from '@/lib/hocs';
-import prisma from '@/lib/prisma';
-import { formatRelativeDate } from '@/lib/utils';
+'use client';
+
 import {
   Breadcrumb,
   Button,
@@ -12,39 +11,21 @@ import {
   Typography,
 } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
-const { Title } = Typography;
+export type Company = {
+  id: string;
+  name: string;
+  createdAt: string;
+  numberOfUsers: number;
+};
 
-export const getServerSideProps = withAuth('SUPERADMIN', async function (user) {
-  const companies = await prisma.company.findMany({
-    select: {
-      id: true,
-      name: true,
-      createdAt: true,
-      _count: {
-        select: {
-          users: true,
-        },
-      },
-    },
-  });
+type Props = {
+  companies: Company[];
+};
 
-  const companiesFlatList = companies.map<Company>((company) => ({
-    id: company.id,
-    name: company.name,
-    createdAt: formatRelativeDate(company.createdAt),
-    numberOfUsers: company._count.users,
-  }));
-
-  return { companies: companiesFlatList };
-});
-
-export default function Page(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
+export function Companies(props: Props) {
   const companies = props.companies;
 
   const [searchText, setSearchText] = useState('');
@@ -78,13 +59,6 @@ export default function Page(
     </Space>
   );
 }
-
-type Company = {
-  id: string;
-  name: string;
-  createdAt: string;
-  numberOfUsers: number;
-};
 
 const columns: ColumnsType<Company> = [
   {

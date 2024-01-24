@@ -1,4 +1,6 @@
-import { resetPassword } from '@/lib/apis/user.api';
+'use client';
+
+import { resetPassword } from '@/actions/user.actions';
 import { useNotifications } from '@/providers/notification.providers';
 import { Button, Form, Input } from 'antd';
 import { useState } from 'react';
@@ -8,7 +10,6 @@ export type FormFields = {
 };
 
 type ResetPasswordFormProps = {
-  companyId: string;
   userId: string;
 };
 
@@ -21,7 +22,7 @@ export function ResetPasswordForm(props: ResetPasswordFormProps) {
     setIsLoading(true);
 
     try {
-      await resetPassword(props.companyId, props.userId, values.password);
+      await resetPassword(props.userId, values.password);
       notifications.success('User password changed');
     } catch (error) {
       notifications.error('Error changing password');

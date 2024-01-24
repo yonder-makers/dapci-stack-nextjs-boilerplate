@@ -1,38 +1,16 @@
+'use client';
+
 import { UserGeneralForm } from '@/components/forms/UserGeneralForm';
-import { withAuth } from '@/lib/hocs';
-import prisma from '@/lib/prisma';
-import { Breadcrumb, Card, Space, Typography } from 'antd';
-import { InferGetServerSidePropsType } from 'next';
+import { Space, Breadcrumb, Typography, Card } from 'antd';
 import Link from 'next/link';
 
-type PageParams = { companyId: string };
-
-export const getServerSideProps = withAuth(
-  'ADMIN',
-  async function (user, params: PageParams) {
-    const companyId = params.companyId;
-
-    const company = await prisma.company.findUnique({
-      where: {
-        id: companyId,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-
-    if (!company) {
-      throw new Error('Company not found');
-    }
-
-    return { company };
-  },
-);
-
-export default function Page(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
+type Props = {
+  company: {
+    id: string;
+    name: string;
+  };
+};
+export function CreateUser(props: Props) {
   const company = props.company;
 
   const breadCrumbItems = [
@@ -51,6 +29,7 @@ export default function Page(
       <Typography.Title level={2}>Create user</Typography.Title>
       <Card title="General info" size="small">
         <UserGeneralForm
+          mode="create"
           companyId={company.id}
           initialState={{
             name: '',

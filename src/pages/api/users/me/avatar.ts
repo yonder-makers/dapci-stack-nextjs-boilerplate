@@ -3,7 +3,6 @@ import { promises as fsPromises } from 'fs';
 
 import { withApiAuth } from '@/lib/hocs';
 import { NextApiRequest } from 'next';
-import { CompanyUser } from '@/lib/types';
 
 export const config = {
   api: {
@@ -34,17 +33,10 @@ async function parseMultipartBody(req: NextApiRequest): Promise<ParsedData> {
 export default withApiAuth<undefined, any>(
   'USER',
   async (user, body, req, res) => {
-    const companyId = req.query.companyId as string;
-    const userId = req.query.userId as string;
-
-    if (user.id !== userId || (user as CompanyUser).companyId !== companyId) {
-      res.status(403).json({ message: 'Forbidden' });
-      return;
-    }
-
+    console.log('hey');
     if (req.method === 'DELETE') {
       // delete file
-      await fsPromises.rm(`./public/avatars/${userId}.jpg`);
+      await fsPromises.rm(`./public/avatars/${user.id}.jpg`);
       res.status(200).json({ message: 'File deleted successfully' });
     } else if (req.method === 'POST') {
       const data = await parseMultipartBody(req);
@@ -57,7 +49,7 @@ export default withApiAuth<undefined, any>(
 
       const file = files[0];
       const oldPath = file.filepath;
-      const newPath = `./public/avatars/${userId}.jpg`;
+      const newPath = `./public/avatars/${user.id}.jpg`;
 
       await fsPromises.cp(oldPath, newPath);
       await fsPromises.rm(oldPath);

@@ -1,25 +1,16 @@
-import { deleteAvatar } from '@/lib/apis/user.api';
+'use client';
+import { deleteMyAvatar } from '@/actions/user.actions';
 import { useNotifications } from '@/providers/notification.providers';
 import { GetProp, Space, Upload, UploadFile, UploadProps } from 'antd';
 import ImgCrop from 'antd-img-crop';
 import { useState } from 'react';
 
-export type FormFields = {
-  id?: string;
-  name: string;
-  email: string;
-  password?: string;
-};
-
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 type UserAvatarUploadProps = {
-  companyId: string;
-  userId: string;
   avatarUrl?: string;
 };
 export function UserAvatarUpload(props: UserAvatarUploadProps) {
-  const { companyId } = props;
   const notifications = useNotifications();
 
   const [fileList, setFileList] = useState<UploadFile[]>(() => {
@@ -58,14 +49,14 @@ export function UserAvatarUpload(props: UserAvatarUploadProps) {
 
   async function onRemove() {
     try {
-      await deleteAvatar(companyId, props.userId);
+      await deleteMyAvatar();
       notifications.success('Avatar picture removed');
     } catch (error) {
       notifications.error("Couldn't delete avatar picture");
     }
   }
 
-  const url = `/api/companies/${companyId}/users/${props.userId}/avatar`;
+  const url = `/api/users/me/avatar`;
 
   return (
     <Space direction="vertical" size="small" style={{ width: '100%' }}>

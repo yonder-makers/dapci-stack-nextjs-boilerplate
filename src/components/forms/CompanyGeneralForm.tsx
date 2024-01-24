@@ -1,10 +1,10 @@
-import { createCompany, updateCompany } from '@/lib/apis/company.api';
+import { createCompany, updateCompany } from '@/actions/company.actions';
 import { useNotifications } from '@/providers/notification.providers';
 import { Button, Form, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-type FormFields = {
+export type FormFields = {
   name: string;
 };
 
@@ -24,12 +24,12 @@ export function CompanyGeneralForm(props: {
 
     try {
       if (props.companyId === undefined) {
-        const company = await createCompany(values.name);
+        const company = await createCompany(values);
         notifications.success('Company created');
 
         router.push(`/companies/${company.id}/edit`);
       } else {
-        const company = await updateCompany(props.companyId, values.name);
+        const company = await updateCompany(props.companyId, values);
         form.setFieldsValue(company);
         notifications.success('Company updated');
       }

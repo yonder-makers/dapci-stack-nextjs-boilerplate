@@ -101,6 +101,15 @@ export function hasAdminPermissions(session?: UserSession) {
   return session?.role === 'ADMIN';
 }
 
+export async function ensureAuthenticated() {
+  const user = await getUserSession();
+  if (!user) {
+    throw new Error('Access denied. You must be logged in.');
+  }
+
+  return user;
+}
+
 export async function ensureCompanyRole() {
   const user = await getUserSession();
   if (!user) {
@@ -137,29 +146,29 @@ export async function ensureSuperAdminRole() {
   }
 }
 
-// export async function ensurePermissionForCompany(
-//   role: UserRoles,
-//   companyId: string,
-// ) {
-//   const user = await ensurePermission(role);
+export async function ensurePermissionForCompany(companyId: string) {
+  const user = await getUserSession();
+  if (!user) {
+    throw new Error('Access denied. You must be logged in.');
+  }
 
-//   switch (role) {
-//     case 'USER':
-//       if (user.companyId !== companyId) {
-//         throw new Error('Access denied');
-//       }
-//       break;
-//     case 'ADMIN':
-//       if (user.companyId !== companyId) {
-//         throw new Error('Access denied');
-//       }
-//       break;
-//     case 'SUPERADMIN':
-//       // super admin has access to all companies
-//       break;
-//     default:
-//       throw new Error('Access denied');
-//   }
+  switch (user.role) {
+    case 'USER':
+      if (user.companyId !== companyId) {
+        throw new Error('Access denied');
+      }
+      break;
+    case 'ADMIN':
+      if (user.companyId !== companyId) {
+        throw new Error('Access denied');
+      }
+      break;
+    case 'SUPERADMIN':
+      // super admin has access to all companies
+      break;
+    default:
+      throw new Error('Access denied');
+  }
 
-//   return user;
-// }
+  return user;
+}

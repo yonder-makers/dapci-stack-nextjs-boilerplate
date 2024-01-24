@@ -1,59 +1,34 @@
-import { withAuth } from '@/lib/hocs';
-import prisma from '@/lib/prisma';
+'use client';
+
 import {
+  Space,
   Breadcrumb,
+  Input,
+  Typography,
+  Flex,
   Button,
   Card,
-  Flex,
-  Input,
-  Space,
   Table,
-  Typography,
 } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useState, useMemo } from 'react';
 
-type PageParams = { companyId: string };
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+};
 
-export const getServerSideProps = withAuth(
-  'ADMIN',
-  async function (user, params: PageParams) {
-    const companyId = params.companyId;
+type Props = {
+  company: {
+    id: string;
+    name: string;
+  };
+  users: User[];
+};
 
-    const company = await prisma.company.findUnique({
-      where: {
-        id: companyId,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-
-    if (!company) {
-      throw new Error('Company not found');
-    }
-
-    const users = await prisma.user.findMany({
-      where: {
-        companyId: companyId,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-      },
-    });
-
-    return { company, users };
-  },
-);
-
-export default function Page(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
+export function CompanyUsers(props: Props) {
   const company = props.company;
   const users = props.users;
 
@@ -92,12 +67,6 @@ export default function Page(
     </Space>
   );
 }
-
-type User = {
-  id: string;
-  name: string;
-  email: string;
-};
 
 function getColumns(companyId: string) {
   const columns: ColumnsType<User> = [

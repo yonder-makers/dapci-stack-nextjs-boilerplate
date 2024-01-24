@@ -1,16 +1,10 @@
+'use client';
+
 import { CompanyGeneralForm } from '@/components/forms/CompanyGeneralForm';
-import { withAuth } from '@/lib/hocs';
-import { Breadcrumb, Card, Space, Typography } from 'antd';
-import { InferGetServerSidePropsType } from 'next';
+import { Space, Breadcrumb, Typography, Card } from 'antd';
 import Link from 'next/link';
 
-export const getServerSideProps = withAuth('SUPERADMIN', async function () {
-  return {};
-});
-
-export default function Page(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
+export function CreateCompany() {
   const breadCrumbItems = [
     { title: <Link href="/">Home</Link> },
     { title: <Link href="/companies">Companies</Link> },
