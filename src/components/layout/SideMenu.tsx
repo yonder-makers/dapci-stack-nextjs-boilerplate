@@ -10,7 +10,11 @@ import {
 } from '@ant-design/icons';
 import { Menu } from 'antd';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import {
+  useRouter,
+  usePathname,
+  useSelectedLayoutSegments,
+} from 'next/navigation';
 import React from 'react';
 
 type SideMenuProps = {
@@ -62,15 +66,18 @@ function NormalUserMenu() {
 }
 
 function AdminMenu({ user }: { user: CompanyUser }) {
-  const pathname = usePathname();
+  const segments = useSelectedLayoutSegments();
+
   let selectedKey = 'Home';
-  if (pathname?.includes('/my-profile')) {
+  if (segments[0] === 'my-profile') {
     selectedKey = 'My profile';
   }
-  if (pathname?.includes('/companies/[companyId]/users')) {
-    selectedKey = 'Users';
+  if (segments[0] === 'companies') {
+    if (segments[2] === 'users') {
+      selectedKey = 'Users';
+    }
   }
-  if (pathname?.includes('/todo-lists')) {
+  if (segments[0] === 'todo-lists') {
     selectedKey = 'Todo lists';
   }
 
